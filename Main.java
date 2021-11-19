@@ -28,8 +28,12 @@ public class Main{
     int Tsize;
     
     public static void main(String Args[]){
+        if(Args.length <4){
+            System.out.println("Usage findCliques.jar <edges to read for each itteration> <threads> <find heaviest edges> <filename>");
+            return;
+        }
         Main m = new Main(Args);
-        m.read("YoutubeGen.data");
+        m.read(Args[3]);
     }
     
     Main(String Args[]){
