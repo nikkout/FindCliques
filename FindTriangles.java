@@ -14,8 +14,8 @@ import java.util.Iterator;
 class FindTriangles implements Runnable{
 
     E[] e;
-    //PriorityBlockingQueue<Triangle> T;
-    Set<Triangle> T;
+    PriorityBlockingQueue<Triangle> T;
+    //Set<Triangle> T;
     Set<Clique4> C4;
     int start;
     int end;
@@ -24,8 +24,10 @@ class FindTriangles implements Runnable{
     HashMap<Integer, ArrayList<Tupple>> L;
     HashMap<Integer, ArrayList<Tupple>> HS;
     ArrayList<Triangle> triangles;
+    static int counter = 0;
+    PriorityBlockingQueue<Triangle> Tl;
 
-    public FindTriangles(E[] e, Set<Triangle> T, Set<Clique4> C4, int start, int end, int Tsize, HashMap<Integer, ArrayList<Tupple>> L, HashMap<Integer, ArrayList<Tupple>> HS){
+    public FindTriangles(E[] e, PriorityBlockingQueue<Triangle> T, Set<Clique4> C4, int start, int end, int Tsize, HashMap<Integer, ArrayList<Tupple>> L, HashMap<Integer, ArrayList<Tupple>> HS){
         this.e = e;
         this.T = T;
 	this.C4 = C4;
@@ -36,6 +38,14 @@ class FindTriangles implements Runnable{
 	this.triangles = new ArrayList<Triangle>();
 	this.L = L;
 	this.HS = HS;
+        FindTriangles.counter++;
+        Tl = new PriorityBlockingQueue<Triangle>(this.Tsize, new Comparator<Triangle>() {
+            @Override
+            public int compare(Triangle lhs, Triangle rhs) {
+                // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                return lhs.weight > rhs.weight ? 1 : (lhs.weight < rhs.weight) ? -1 : 0;
+            }
+        });
     }
 
     private void Triangles(){
@@ -47,19 +57,26 @@ class FindTriangles implements Runnable{
                 if(current.B.contains(new Tupple(vertex, 0))){
                     double weight = current.edge.weight+current.A.get(y).weight+current.B.get(current.B.indexOf(new Tupple(current.A.get(y).vertex, 0))).weight;
                     Triangle tr = new Triangle(current.edge.vertex1, current.edge.vertex2, current.A.get(y).vertex, weight);
-		    if (!this.Clique_4.containsKey(current.edge)) Clique_4.put(current.edge, new ArrayList<Integer>());
-	            Clique_4.get(current.edge).add(vertex);
-                    /*if(!this.T.contains(tr)){
-                        if(T.size() < this.Tsize){
-                            this.T.put(tr);
-                        }
-                        else if(tr.weight > this.T.peek().weight){
+		    //!if (!this.Clique_4.containsKey(current.edge)) Clique_4.put(current.edge, new ArrayList<Integer>());
+	            //Clique_4.get(current.edge).add(vertex);
+                    if(Tl.size()< this.Tsize && !Tl.contains(tr)){
+                        Tl.put(tr);
+                    }
+                    else if(Tl.peek().weight < tr.weight && !Tl.contains(tr)){
+                        Tl.poll();
+                        Tl.put(tr);
+                    }
+                    /*while(true){
+                        Triangle tmp = Tl.poll();
+                        if(tmp == null || (this.T.size() >= this.Tsize && this.T.peek().weight >= tmp.weight)) break;
+                        if(this.T.size() < this.Tsize) this.T.put(tmp);
+                        else {
                             this.T.poll();
-                            this.T.put(tr);
+                            this.T.put(tmp);
                         }
-                    }*/
-                    this.T.add(tr);
-		    this.triangles.add(tr);
+		    }*/
+                    //this.T.add(tr);
+		    //!this.triangles.add(tr);
                 }
             }
         }
@@ -81,7 +98,7 @@ class FindTriangles implements Runnable{
 			    if(tmp == null) tmp =  this.HS.get(temp).get(pos);
 			    Triangle t1 = this.triangles.get(this.triangles.indexOf(new Triangle(key.vertex1, key.vertex2, arr.get(i), 0)));
 			    Triangle t2 = this.triangles.get(this.triangles.indexOf(new Triangle(key.vertex1, key.vertex2, arr.get(y), 0)));
-			    this.C4.add(new Clique4(t1, t2, new Edge(arr.get(y), tmp.vertex, tmp.weight), t1.weight+t2.weight+tmp.weight-key.weight));
+			    //this.C4.add(new Clique4(t1, t2, new Edge(arr.get(y), tmp.vertex, tmp.weight), t1.weight+t2.weight+tmp.weight-key.weight));
 		    }
                 }
 	    }
@@ -90,6 +107,6 @@ class FindTriangles implements Runnable{
 
     public void run() {
         this.Triangles();
-	this.clique4();
+	//this.clique4();
     }
 }
