@@ -55,6 +55,6 @@ class Triangle{
     }
 
     public String toString(){
-    	return this.vertex1+" "+this.vertex2+" "+this.vertex3;
+    	return this.vertex1+" "+this.vertex2+" "+this.vertex3 + "  | size: "+this.weight;
     }
 }

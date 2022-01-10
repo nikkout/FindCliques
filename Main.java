@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
 import java.lang.Math;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,10 +24,10 @@ public class Main{
     ArrayList<Edge> array;
     PriorityBlockingQueue<Triangle> T;
     //Set<Triangle> T;
-    Set<Clique4> C4;
+    PriorityBlockingQueue<Clique4> C4;
     int tnum;
     int threads;
-    int Tsize;
+    int Size;
     
     public static void main(String Args[]){
         if(Args.length <4){
@@ -40,21 +42,28 @@ public class Main{
     Main(String Args[]){
         this.tnum = Integer.parseInt(Args[0]);
         this.threads = Integer.parseInt(Args[1]);
-        this.Tsize = Integer.parseInt(Args[2]);
+        this.Size = Integer.parseInt(Args[2]);
         L = new HashMap<Integer, ArrayList<Tupple>>();
         H = new HashMap<Integer, ArrayList<Tupple>>();
         HS = new HashMap<Integer, ArrayList<Tupple>>();
         S = new HashMap<Integer, ArrayList<Tupple>>();
         array = new ArrayList<Edge>();
-        T = new PriorityBlockingQueue<Triangle>(this.Tsize, new Comparator<Triangle>() {
+        T = new PriorityBlockingQueue<Triangle>(this.Size, new Comparator<Triangle>() {
             @Override
             public int compare(Triangle lhs, Triangle rhs) {
                 // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
                 return lhs.weight > rhs.weight ? 1 : (lhs.weight < rhs.weight) ? -1 : 0;
             }
         });
+        C4 = new PriorityBlockingQueue<Clique4>(this.Size, new Comparator<Clique4>() {
+            @Override
+            public int compare(Clique4 lhs, Clique4 rhs) {
+                // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                return lhs.weight > rhs.weight ? 1 : (lhs.weight < rhs.weight) ? -1 : 0;
+            }
+        });
         //T = Collections.synchronizedSet(new HashSet<Triangle>(100000));
-	C4 = Collections.synchronizedSet(new HashSet<Clique4>(10000));
+	    //C4 = Collections.synchronizedSet(new HashSet<Clique4>(10000));
     }
 
     void read(String fname){
@@ -90,19 +99,19 @@ public class Main{
                 return lhs.weight > rhs.weight ? -1 : (lhs.weight < rhs.weight) ? 1 : 0;
             }
         });
-        
-        System.out.println(this.tnum+" "+this.threads+" "+this.Tsize+" ----------    -----------");
-        this.findTriangles(this.tnum, this.threads, this.Tsize);
+        System.out.println(this.tnum+" "+this.threads+" "+this.Size+" ----------    -----------");
+        this.findTriangles(this.tnum, this.threads, this.Size);
     }
     
-    void findTriangles(int tnum, int threads, int Tsize){
+    void findTriangles(int tnum, int threads, int Size){
         int limit =0;
         int l=-1;
         int h=-1;
         double ar = 1.5;
         double r = 0;
+        double d = 0;
         int p =1;
-        while(this.T.peek() == null || this.T.peek().weight <= r || this.T.size()<this.Tsize){//l<array.size()-1){
+        while(this.C4.peek() == null || this.C4.peek().weight <= d || this.C4.size()<this.Size){//l<array.size()-1){
             if(array.get(l+1).weight > Math.pow(array.get(h+1).weight, ar) || l==h){
                 //find triangles with edge l+1 and two edges in S and H
                 limit = tnum;
@@ -117,8 +126,8 @@ public class Main{
                     l+=1;
                 }
                 
-                findTriangles(e1, threads, Tsize);
-                findTriangles(e2, threads, Tsize);
+                findTriangles(e1, threads, Size);
+                findTriangles(e2, threads, Size);
             }
             else{
                 limit = l-h;
@@ -129,16 +138,35 @@ public class Main{
                     move(H, S, array, h);
                     h+=1;
                 }
-                findTriangles(e, threads, Tsize);
+                findTriangles(e, threads, Size);
             }
             if(h!= -1)r = Math.pow((double)(array.get(h).weight), p)+2*Math.pow((float)(array.get(l).weight), p);
             else r = Math.pow((double)(array.get(0).weight), p)+2*Math.pow((float)(array.get(l).weight), p);
+            d = 2*r+array.get(l).weight;
             System.out.println(T.size());
             System.out.println("R: "+r);
             if(T.peek() != null)System.out.println(T.peek().weight);
+            System.out.println(C4.size());
+            System.out.println("D: "+d);
+            if(C4.peek() != null)System.out.println(C4.peek().weight);
         }
         System.out.println(T.size());
-	System.out.println(C4.size());
+	    System.out.println(C4.size());
+	    /*Clique4[] ca = new Clique4[C4.size()];
+	    ca = C4.toArray(ca);
+	    Triangle[] ta = new Triangle[T.size()];
+	    ta = T.toArray(ta);
+	    //List al = Arrays.asList(ta);
+	    List al = Arrays.asList(ca);
+	    Collections.sort(al, new Comparator<Clique4>() {
+            @Override
+            public int compare(Clique4 lhs, Clique4 rhs) {
+                // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                return lhs.weight > rhs.weight ? -1 : (lhs.weight < rhs.weight) ? 1 : 0;
+            }
+        });
+	    //for(int i=0;i<=20;i++)System.out.println(al.get(i));
+	    for(int i=0;i<20;i++)System.out.println(al.get(i));*/
     }
     
     void move(HashMap<Integer, ArrayList<Tupple>> rm, HashMap<Integer, ArrayList<Tupple>> add, ArrayList<Edge> array, int l){
@@ -159,7 +187,7 @@ public class Main{
         add.get(tmp.vertex2).add(new Tupple(tmp.vertex1, tmp.weight));
     }
     
-    void findTriangles(ArrayList<E> e, int threads, int Tsize){
+    void findTriangles(ArrayList<E> e, int threads, int Size){
         int size = e.size();
         int rem = size%threads;
         size /=threads;
@@ -168,8 +196,8 @@ public class Main{
         E[] arrayE = new E[e.size()];
         arrayE = e.toArray(arrayE);
         for(int i=0;i<threads;i++){
-            if(i==threads-1) ft[i] = new FindTriangles(arrayE, T, C4, i*size, (i+1)*size+rem, Tsize, this.L, this.HS);
-            else ft[i] = new FindTriangles(arrayE, T, C4, i*size, (i+1)*size, Tsize, this.L, this.HS);
+            if(i==threads-1) ft[i] = new FindTriangles(arrayE, i*size, (i+1)*size+rem, Size, this.L, this.HS);
+            else ft[i] = new FindTriangles(arrayE, i*size, (i+1)*size, Size, this.L, this.HS);
             Thread thread = new Thread(ft[i]);
             thread.start();
             threadsArray[i] = thread;
@@ -184,11 +212,20 @@ public class Main{
 		//}
 		while(true){
                         Triangle tmp = ft[i].Tl.poll();
-                        if(tmp == null || (this.T.size() >= this.Tsize && this.T.peek().weight >= tmp.weight)) break;
-                        if(this.T.size() < this.Tsize) this.T.put(tmp);
-                        else {
+                        if(tmp == null) break;
+                        if(this.T.size() < this.Size && !T.contains(tmp)) this.T.put(tmp);
+                        else if(this.T.peek().weight < tmp.weight && !T.contains(tmp)){
                             this.T.poll();
                             this.T.put(tmp);
+                        }
+                    }
+            while(true){
+                        Clique4 tmp = ft[i].C4.poll();
+                        if(tmp == null) break;
+                        if(this.C4.size() < this.Size && !C4.contains(tmp)) this.C4.put(tmp);
+                        else if(this.C4.peek().weight < tmp.weight && !C4.contains(tmp)){
+                            this.C4.poll();
+                            this.C4.put(tmp);
                         }
                     }
             }

@@ -55,7 +55,7 @@ class Clique4{
     }
 
     public String toString(){
-    	return this.vertex1+" "+this.vertex2+" "+this.vertex3+" "+this.vertex4;
+    	return this.vertex1+" "+this.vertex2+" "+this.vertex3+" "+this.vertex4+"  | size:"+this.weight;
     }
 
 }
