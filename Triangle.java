@@ -1,8 +1,13 @@
-class Triangle{
+class Triangle implements Weighted{
     int vertex1;
     int vertex2;
     int vertex3;
     double weight;
+
+    @Override
+    public double get_weight(){
+    	return this.weight;
+    }
     
     public Triangle(int vertex1, int vertex2, int vertex3, double weight){
         if(vertex1 < vertex2 && vertex1 < vertex3){

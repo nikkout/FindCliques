@@ -28,21 +28,30 @@ public class Main{
     int tnum;
     int threads;
     int Size;
+    int cliqueSize;
+    Triangle ht = null;
+    boolean debug = true;
     
     public static void main(String Args[]){
-        if(Args.length <4){
-            System.out.println("Usage findCliques.jar <edges to read for each itteration> <threads> <find heaviest edges> <filename>");
+        if(Args.length <5){
+            System.out.println("Usage findCliques.jar <edges to read for each itteration> <threads> <find heaviest edges> <filename> <Clique size 3|4>");
             return;
         }
         Main m = new Main(Args);
         m.read(Args[3]);
         System.out.println(FindTriangles.counter);
+	System.out.println(m.ht);
     }
     
     Main(String Args[]){
         this.tnum = Integer.parseInt(Args[0]);
         this.threads = Integer.parseInt(Args[1]);
-        this.Size = Integer.parseInt(Args[2]);
+        this.Size = Integer.parseInt(Args[2])+1;
+	this.cliqueSize = Integer.parseInt(Args[4]);
+	if(this.cliqueSize <3 || this.cliqueSize > 4){
+		System.out.println("Unsupported clique size: "+this.cliqueSize);
+		return;
+	}
         L = new HashMap<Integer, ArrayList<Tupple>>();
         H = new HashMap<Integer, ArrayList<Tupple>>();
         HS = new HashMap<Integer, ArrayList<Tupple>>();
@@ -111,7 +120,10 @@ public class Main{
         double r = 0;
         double d = 0;
         int p =1;
-        while(this.C4.peek() == null || this.C4.peek().weight <= d || this.C4.size()<this.Size){//l<array.size()-1){
+	double threshold = 0;
+	Weighted currentPeek = null;
+	int currentSize = 0;
+        while(currentPeek == null || currentPeek.get_weight() < threshold || currentSize<this.Size){//l<array.size()-1){
             if(array.get(l+1).weight > Math.pow(array.get(h+1).weight, ar) || l==h){
                 //find triangles with edge l+1 and two edges in S and H
                 limit = tnum;
@@ -143,12 +155,23 @@ public class Main{
             if(h!= -1)r = Math.pow((double)(array.get(h).weight), p)+2*Math.pow((float)(array.get(l).weight), p);
             else r = Math.pow((double)(array.get(0).weight), p)+2*Math.pow((float)(array.get(l).weight), p);
             d = 2*r+array.get(l).weight;
+	    if(this.cliqueSize == 3){
+                threshold = r;
+                currentSize = this.T.size();
+                currentPeek = this.T.peek();
+            }
+            else {
+                threshold = d;
+                currentSize = this.C4.size();
+                currentPeek = this.C4.peek();
+       	    }
             System.out.println(T.size());
             System.out.println("R: "+r);
             if(T.peek() != null)System.out.println(T.peek().weight);
             System.out.println(C4.size());
             System.out.println("D: "+d);
             if(C4.peek() != null)System.out.println(C4.peek().weight);
+            if(currentPeek != null)System.out.println(currentPeek.get_weight());
         }
         System.out.println(T.size());
 	    System.out.println(C4.size());
@@ -196,8 +219,8 @@ public class Main{
         E[] arrayE = new E[e.size()];
         arrayE = e.toArray(arrayE);
         for(int i=0;i<threads;i++){
-            if(i==threads-1) ft[i] = new FindTriangles(arrayE, i*size, (i+1)*size+rem, Size, this.L, this.HS);
-            else ft[i] = new FindTriangles(arrayE, i*size, (i+1)*size, Size, this.L, this.HS);
+            if(i==threads-1) ft[i] = new FindTriangles(new Parameters(arrayE, i*size, (i+1)*size+rem, Size, this.L, this.HS, this.cliqueSize, this.debug));
+            else ft[i] = new FindTriangles(new Parameters(arrayE, i*size, (i+1)*size, Size, this.L, this.HS,this.cliqueSize, this.debug));
             Thread thread = new Thread(ft[i]);
             thread.start();
             threadsArray[i] = thread;
@@ -218,8 +241,9 @@ public class Main{
                             this.T.poll();
                             this.T.put(tmp);
                         }
+			if(this.debug && ( this.ht == null || tmp.weight > this.ht.weight)) this.ht = tmp;
                     }
-            while(true){
+            	while(this.cliqueSize>3){
                         Clique4 tmp = ft[i].C4.poll();
                         if(tmp == null) break;
                         if(this.C4.size() < this.Size && !C4.contains(tmp)) this.C4.put(tmp);
@@ -234,4 +258,8 @@ public class Main{
         catch(Exception exc){exc.printStackTrace();}
     }
 
+}
+
+interface Weighted{
+	double get_weight();
 }

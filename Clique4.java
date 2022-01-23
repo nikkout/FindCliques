@@ -1,10 +1,15 @@
-class Clique4{
+class Clique4 implements Weighted{
     
     int vertex1;
     int vertex2;
     int vertex3;
     int vertex4;
     double weight;
+
+    @Override
+    public double get_weight(){
+    	return this.weight;
+    }
 
     public Clique4(Triangle triangleA, Triangle triangleB, Edge edge, double weight){
 	int[] a = {triangleA.vertex1, triangleA.vertex2, triangleA.vertex3};
