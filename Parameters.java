@@ -1,5 +1,8 @@
+import java.util.Set;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.ArrayList;
+import java.util.concurrent.PriorityBlockingQueue;
 
 class Parameters{
 	E[] e;
@@ -10,8 +13,10 @@ class Parameters{
 	HashMap<Integer, ArrayList<Tupple>> HS;
 	int cliqueSize;
 	boolean debug;
+	PriorityBlockingQueue<Triangle> T;
+	Set<Triangle> TSet;
 
-	public Parameters(E[] e, int start, int end, int Size, HashMap<Integer, ArrayList<Tupple>> L, HashMap<Integer, ArrayList<Tupple>> HS, int cliqueSize, boolean debug){
+	public Parameters(E[] e, int start, int end, int Size, HashMap<Integer, ArrayList<Tupple>> L, HashMap<Integer, ArrayList<Tupple>> HS, int cliqueSize, boolean debug, PriorityBlockingQueue<Triangle> T, Set<Triangle> TSet){
 		this.e = e;
 		this.start = start;
 		this.end = end;
@@ -20,5 +25,7 @@ class Parameters{
 		this.HS = HS;
 		this.cliqueSize = cliqueSize;
 		this.debug = debug;
+		this.T = T;
+		this.TSet = TSet;
 	}
 }

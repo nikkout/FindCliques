@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.lang.Math;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,6 +23,7 @@ class FindTriangles implements Runnable{
     PriorityBlockingQueue<Triangle> Tl;
     Triangle ht = null;
     Parameters parameters;
+    Triangle[] triangle_array;
 
     public FindTriangles(Parameters parameters){
         this.parameters = parameters;
@@ -53,8 +55,10 @@ class FindTriangles implements Runnable{
                 if(current.B.contains(new Tupple(vertex, 0))){
                     double weight = current.edge.weight+current.A.get(y).weight+current.B.get(current.B.indexOf(new Tupple(current.A.get(y).vertex, 0))).weight;
                     Triangle tr = new Triangle(current.edge.vertex1, current.edge.vertex2, current.A.get(y).vertex, weight);
-		    if (!this.Clique_4.containsKey(current.edge)) Clique_4.put(current.edge, new ArrayList<Clique4Value>());
-	            Clique_4.get(current.edge).add(new Clique4Value(tr,vertex));
+		    if(this.parameters.cliqueSize > 3){
+			if (!this.Clique_4.containsKey(current.edge)) Clique_4.put(current.edge, new ArrayList<Clique4Value>());
+	            	Clique_4.get(current.edge).add(new Clique4Value(tr,vertex));
+		    }
 		    //Check if triangle is one of the k-heaviest, if it is added
 		    //the k-heaviest that currently have been found
                     if(Tl.size()< this.parameters.Size && !Tl.contains(tr)){
@@ -68,6 +72,29 @@ class FindTriangles implements Runnable{
                 }
             }
         }
+        this.triangle_array = new Triangle[Tl.size()];
+        this.triangle_array = Tl.toArray(this.triangle_array);
+        Arrays.sort(this.triangle_array, new Comparator<Triangle>() {
+            @Override
+            public int compare(Triangle lhs, Triangle rhs) {
+                // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                return lhs.weight > rhs.weight ? -1 : (lhs.weight < rhs.weight) ? 1 : 0;
+                }
+            });
+        int i = 0;
+        while(this.triangle_array.length > i){
+            if(this.parameters.T.size() < this.parameters.Size && !this.parameters.TSet.contains(this.triangle_array[i])){
+		this.parameters.T.put(this.triangle_array[i]);
+		this.parameters.TSet.add(this.triangle_array[i]);
+	    }
+            else if(this.parameters.T.peek().weight < this.triangle_array[i].weight && !this.parameters.TSet.contains(this.triangle_array[i])){
+	        this.parameters.T.poll();
+		this.parameters.T.put(this.triangle_array[i]);
+            }
+            else if(this.parameters.T.peek().weight > this.triangle_array[i].weight && this.parameters.T.size() >= this.parameters.Size) break;
+	    i++;
+	}
+	//System.out.println(Arrays.toString(this.triangle_array));
     }
 
     private void clique4(){
