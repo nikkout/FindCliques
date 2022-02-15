@@ -61,10 +61,11 @@ class FindTriangles implements Runnable{
 		    }
 		    //Check if triangle is one of the k-heaviest, if it is added
 		    //the k-heaviest that currently have been found
-                    if(Tl.size()< this.parameters.Size && !Tl.contains(tr)){
+		    if(Tl.contains(tr))continue;
+                    else if(Tl.size()< this.parameters.Size){
                         Tl.put(tr);
                     }
-                    else if(Tl.peek().weight < tr.weight && !Tl.contains(tr)){
+                    else if(Tl.peek().weight < tr.weight){
                         Tl.poll();
                         Tl.put(tr);
                     }
@@ -81,18 +82,18 @@ class FindTriangles implements Runnable{
                 return lhs.weight > rhs.weight ? -1 : (lhs.weight < rhs.weight) ? 1 : 0;
                 }
             });
-        int i = 0;
-        while(this.triangle_array.length > i){
-            if(this.parameters.T.size() < this.parameters.Size && !this.parameters.TSet.contains(this.triangle_array[i])){
+        for(int i=0;i<this.triangle_array.length;i++){
+	    if(this.parameters.TSet.contains(this.triangle_array[i]))continue;
+            else if(this.parameters.T.size() < this.parameters.Size ){
 		this.parameters.T.put(this.triangle_array[i]);
 		this.parameters.TSet.add(this.triangle_array[i]);
 	    }
-            else if(this.parameters.T.peek().weight < this.triangle_array[i].weight && !this.parameters.TSet.contains(this.triangle_array[i])){
-	        this.parameters.T.poll();
+            else if(this.parameters.T.peek().weight < this.triangle_array[i].weight){
+	        this.parameters.TSet.remove(this.parameters.T.poll());
 		this.parameters.T.put(this.triangle_array[i]);
+		this.parameters.TSet.add(this.triangle_array[i]);
             }
-            else if(this.parameters.T.peek().weight > this.triangle_array[i].weight && this.parameters.T.size() >= this.parameters.Size) break;
-	    i++;
+            else if(this.parameters.T.peek().weight >= this.triangle_array[i].weight && this.parameters.T.size() >= this.parameters.Size) break;
 	}
 	//System.out.println(Arrays.toString(this.triangle_array));
     }

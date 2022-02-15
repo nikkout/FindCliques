@@ -12,7 +12,8 @@ import java.util.Comparator;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Iterator;
-
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 
 public class Main{
@@ -40,17 +41,19 @@ public class Main{
         Main m = new Main(Args);
         m.read(Args[3]);
         System.out.println(FindTriangles.counter);
-	System.out.println(m.ht);
 	Triangle[] triangles = new Triangle[m.T.size()];
 	triangles = m.T.toArray(triangles);
-	/*Arrays.sort(triangles, new Comparator<Triangle>() {
+	Arrays.sort(triangles, new Comparator<Triangle>() {
             @Override
             public int compare(Triangle lhs, Triangle rhs) {
                 // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
                 return lhs.weight > rhs.weight ? -1 : (lhs.weight < rhs.weight) ? 1 : 0;
             }
         });
-	System.out.println(Arrays.toString(triangles));*/
+	//System.out.println(Arrays.toString(triangles));
+	for(int i=0;i<15;i++){
+	    System.out.println(triangles[i]);
+	}
     }
     
     Main(String Args[]){
@@ -90,14 +93,19 @@ public class Main{
         double tmp3=0;
         int counter = 0;
         try{
-            Scanner scanner = new Scanner(new File(fname));
-            while(scanner.hasNextInt()){
+            //Scanner scanner = new Scanner(new File(fname));
+	    BufferedReader br = new BufferedReader(new FileReader(new File(fname)));
+            String st;
+	    br.readLine();
+	    //while(scanner.hasNextInt()){
+            while ((st = br.readLine()) != null){
                 counter++;
-                if(counter % 100000 == 0)System.out.println(counter);
+                //if(counter % 100000 == 0)System.out.println(counter);
                 //Read a line
-                tmp1 = scanner.nextInt();
-                tmp2 = scanner.nextInt();
-                tmp3 = scanner.nextDouble();
+                String[] tmp_arr = st.split(" ");
+                tmp1 = Integer.parseInt(tmp_arr[0]);
+                tmp2 = Integer.parseInt(tmp_arr[1]);
+                tmp3 = Integer.parseInt(tmp_arr[2]);
                 if(!this.L.containsKey(tmp1)){
                     this.L.put(tmp1, new ArrayList<Tupple>());
                 }
@@ -145,7 +153,9 @@ public class Main{
                 for(int i=0;i<limit;i++){
                     if (HS.containsKey(array.get(l+1).vertex1) && HS.containsKey(array.get(l+1).vertex2))e1.add(new E(array.get(l+1), HS.get(array.get(l+1).vertex1), HS.get(array.get(l+1).vertex2)));
                     if (HS.containsKey(array.get(l+1).vertex1) && L.containsKey(array.get(l+1).vertex2))e2.add(new E(array.get(l+1), HS.get(array.get(l+1).vertex1), L.get(array.get(l+1).vertex2)));
-                    move(L, H, array, l);
+		    if (HS.containsKey(array.get(l+1).vertex2) && L.containsKey(array.get(l+1).vertex1))e2.add(new E(array.get(l+1), HS.get(array.get(l+1).vertex2), L.get(array.get(l+1).vertex1)));
+ 
+		    move(L, H, array, l);
                     add(HS, array, l);
                     l+=1;
                 }
@@ -177,16 +187,16 @@ public class Main{
                 currentSize = this.C4.size();
                 currentPeek = this.C4.peek();
        	    }
-            System.out.println(T.size());
-            System.out.println("R: "+r);
-            if(T.peek() != null)System.out.println(T.peek().weight);
-            System.out.println(C4.size());
-            System.out.println("D: "+d);
-            if(C4.peek() != null)System.out.println(C4.peek().weight);
-            if(currentPeek != null)System.out.println(currentPeek.get_weight());
+            //System.out.println(T.size());
+            //System.out.println("R: "+r);
+            //if(T.peek() != null)System.out.println(T.peek().weight);
+            //System.out.println(C4.size());
+            //System.out.println("D: "+d);
+            //if(C4.peek() != null)System.out.println(C4.peek().weight);
+            //if(currentPeek != null)System.out.println(currentPeek.get_weight());
         }
         System.out.println(T.size());
-	    System.out.println(C4.size());
+	System.out.println(C4.size());
 	    /*Clique4[] ca = new Clique4[C4.size()];
 	    ca = C4.toArray(ca);
 	    Triangle[] ta = new Triangle[T.size()];
@@ -205,9 +215,11 @@ public class Main{
     }
     
     void move(HashMap<Integer, ArrayList<Tupple>> rm, HashMap<Integer, ArrayList<Tupple>> add, ArrayList<Edge> array, int l){
-        Edge tmp = array.get(l+1); 
-        rm.remove(tmp.vertex1);
-        rm.remove(tmp.vertex2);
+        Edge tmp = array.get(l+1);
+	rm.get(tmp.vertex1).remove(new Tupple(tmp.vertex2, 0));
+        rm.get(tmp.vertex2).remove(new Tupple(tmp.vertex1, 0));
+        if(rm.get(tmp.vertex1).size()==0)rm.remove(tmp.vertex1);
+        if(rm.get(tmp.vertex2).size()==0)rm.remove(tmp.vertex2);
         if(!add.containsKey(tmp.vertex1))add.put(tmp.vertex1, new ArrayList<Tupple>());
         add.get(tmp.vertex1).add(new Tupple(tmp.vertex2, tmp.weight));
         if(!add.containsKey(tmp.vertex2))add.put(tmp.vertex2, new ArrayList<Tupple>());
@@ -267,7 +279,7 @@ public class Main{
                         }
                     }
             }
-            System.out.println("Threads finished.");
+            //System.out.println("Threads finished.");
         }
         catch(Exception exc){exc.printStackTrace();}
     }
