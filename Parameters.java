@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.concurrent.PriorityBlockingQueue;
 
 class Parameters{
-	E[] e;
+	Edge[] e;
 	int start;
 	int end;
 	int Size;
@@ -15,8 +15,9 @@ class Parameters{
 	boolean debug;
 	PriorityBlockingQueue<Triangle> T;
 	Set<Triangle> TSet;
+	int mode;
 
-	public Parameters(E[] e, int start, int end, int Size, HashMap<Integer, ArrayList<Tupple>> L, HashMap<Integer, ArrayList<Tupple>> HS, int cliqueSize, boolean debug, PriorityBlockingQueue<Triangle> T, Set<Triangle> TSet){
+	public Parameters(Edge[] e, int start, int end, int Size, HashMap<Integer, ArrayList<Tupple>> L, HashMap<Integer, ArrayList<Tupple>> HS, int cliqueSize, boolean debug, PriorityBlockingQueue<Triangle> T, Set<Triangle> TSet, int mode){
 		this.e = e;
 		this.start = start;
 		this.end = end;
@@ -27,5 +28,6 @@ class Parameters{
 		this.debug = debug;
 		this.T = T;
 		this.TSet = TSet;
+		this.mode = mode;
 	}
 }
