@@ -76,18 +76,11 @@ class FindTriangles implements Runnable{
 	        ArrayList<Tupple> v1 = new ArrayList<Tupple>(this.parameters.HS.get(current.vertex1));
 		ArrayList<Tupple> v2 = new ArrayList<Tupple>(this.parameters.HS.get(current.vertex2));
 		v1.retainAll(this.parameters.HS.get(current.vertex2));
-		v2.retainAll(v1);
 		for(int y=0;y<v1.size();y++){
 		    Tupple a = v1.get(y);
 		    Tupple b = v2.get(v2.indexOf(a));
 		    Triangle tr = new Triangle(current.vertex1, current.vertex2, a.vertex, current.weight+a.weight+b.weight);
-		    if(Tl.size()< this.parameters.Size){
-                        Tl.add(tr);
-                        if(min > tr.weight) min = tr.weight;
-                    }
-                    else if(min < tr.weight){
-                        Tl.add(tr);
-                    }
+                    Tl.add(tr);
 		}
 	    }
 	    if(this.parameters.mode ==0 &&this.parameters.HS.containsKey(current.vertex1) && this.parameters.L.containsKey(current.vertex2)){
@@ -99,31 +92,29 @@ class FindTriangles implements Runnable{
                     Tupple a = v1.get(y);
                     Tupple b = v2.get(v2.indexOf(a));
                     Triangle tr = new Triangle(current.vertex1, current.vertex2, a.vertex, current.weight+a.weight+b.weight);
-                    if(Tl.size()< this.parameters.Size){
-                        Tl.add(tr);
-                        if(min > tr.weight) min = tr.weight;
-                    }
-                    else if(min < tr.weight){
-                        Tl.add(tr);
-                    }           
+                    Tl.add(tr);
+                }
+            }
+	    if(this.parameters.mode ==0 &&this.parameters.HS.containsKey(current.vertex2) && this.parameters.L.containsKey(current.vertex1)){
+                ArrayList<Tupple> v1 = new ArrayList<Tupple>(this.parameters.HS.get(current.vertex2));
+                ArrayList<Tupple> v2 = new ArrayList<Tupple>(this.parameters.L.get(current.vertex1));
+                v1.retainAll(v2);
+                for(int y=0;y<v1.size();y++){
+                    Tupple a = v1.get(y);
+                    Tupple b = v2.get(v2.indexOf(a));
+                    Triangle tr = new Triangle(current.vertex1, current.vertex2, a.vertex, current.weight+a.weight+b.weight);
+                    Tl.add(tr);
                 }
             }
 	    if(this.parameters.mode ==1 &&this.parameters.L.containsKey(current.vertex1) && this.parameters.L.containsKey(current.vertex2)){
                 ArrayList<Tupple> v1 = new ArrayList<Tupple>(this.parameters.L.get(current.vertex1));
                 ArrayList<Tupple> v2 = new ArrayList<Tupple>(this.parameters.L.get(current.vertex2));
                 v1.retainAll(v2);
-                v2.retainAll(v1);
                 for(int y=0;y<v1.size();y++){
                     Tupple a = v1.get(y);
                     Tupple b = v2.get(v2.indexOf(a));
                     Triangle tr = new Triangle(current.vertex1, current.vertex2, a.vertex, current.weight+a.weight+b.weight);
-                    if(Tl.size()< this.parameters.Size){
-                        Tl.add(tr);
-                        if(min > tr.weight) min = tr.weight;
-                    }
-                    else if(min < tr.weight){
-                        Tl.add(tr);
-                    }
+                    Tl.add(tr);
                 }
             }
         }

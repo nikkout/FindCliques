@@ -32,15 +32,16 @@ public class Main{
     int cliqueSize;
     Triangle ht = null;
     boolean debug = true;
+    double ar = 1;
     
     public static void main(String Args[]){
-        if(Args.length <5){
-            System.out.println("Usage findCliques.jar <edges to read for each itteration> <threads> <find heaviest edges> <filename> <Clique size 3|4>");
+        if(Args.length <6){
+            System.out.println("Usage findCliques.jar <edges to read for each itteration> <threads> <find heaviest edges> <filename> <Clique size 3|4> <ar value>");
             return;
         }
         Main m = new Main(Args);
         m.read(Args[3]);
-        /*System.out.println(FindTriangles.counter);
+        System.out.println(FindTriangles.counter);
 	Triangle[] triangles = new Triangle[m.T.size()];
 	triangles = m.T.toArray(triangles);
 	Arrays.sort(triangles, new Comparator<Triangle>() {
@@ -53,7 +54,7 @@ public class Main{
 	//System.out.println(Arrays.toString(triangles));
 	for(int i=0;i<20;i++){
 	    System.out.println(triangles[i]);
-	}*/
+	}
     }
     
     Main(String Args[]){
@@ -61,6 +62,7 @@ public class Main{
         this.threads = Integer.parseInt(Args[1]);
         this.Size = Integer.parseInt(Args[2])+1;
 	this.cliqueSize = Integer.parseInt(Args[4]);
+	this.ar = Double.parseDouble(Args[5]);
 	if(this.cliqueSize <3 || this.cliqueSize > 4){
 		System.out.println("Unsupported clique size: "+this.cliqueSize);
 		return;
@@ -136,58 +138,45 @@ public class Main{
         int limit =0;
         int l=-1;
         int h=-1;
-        double ar = 0.97;
         double r = 0;
         double d = 0;
         int p =1;
 	double threshold = 0;
+	boolean pick = false;
 	Weighted currentPeek = null;
 	int currentSize = 0;
         while(currentPeek == null || currentPeek.get_weight() < threshold || currentSize<this.Size){//l<array.size()-1){
-            if(array.get(l+1).weight > Math.pow(array.get(h+1).weight, ar) || l<=h){
-		System.out.println(array.get(l+1).weight);
-		System.out.println(Math.pow(array.get(h+1).weight, ar));
+            if( pick || Math.pow(array.get(l+1).weight, ar) > array.get(h+1).weight || l<=h){
+		pick = false;
+		//System.out.println(array.get(l+1).weight);
+		//System.out.println(Math.pow(array.get(h+1).weight, ar));
                 //find triangles with edge l+1 and two edges in S and H
                 limit = tnum;
                 if(array.size()-l <= tnum) limit = array.size()-l-1;
                 ArrayList<Edge> e1 = new ArrayList<Edge>();
                 ArrayList<Edge> e2 = new ArrayList<Edge>();
-		long t1 = System.currentTimeMillis();
                 for(int i=0;i<limit;i++){
-                    //if (HS.containsKey(array.get(l+1).vertex1) && HS.containsKey(array.get(l+1).vertex2))e1.add(new E(array.get(l+1), HS.get(array.get(l+1).vertex1), HS.get(array.get(l+1).vertex2)));
-                    //if (HS.containsKey(array.get(l+1).vertex1) && L.containsKey(array.get(l+1).vertex2))e2.add(new E(array.get(l+1), HS.get(array.get(l+1).vertex1), L.get(array.get(l+1).vertex2)));
-		    //if (HS.containsKey(array.get(l+1).vertex2) && L.containsKey(array.get(l+1).vertex1))e2.add(new E(array.get(l+1), HS.get(array.get(l+1).vertex2), L.get(array.get(l+1).vertex1)));
  		    e1.add(array.get(l+1));
-		    //e2.add(array.get(l+1));
 		    move(L, HS, array, l);
-                    //add(HS, array, l);
                     l+=1;
                 }
-		//remove(L, array, l-limit, limit);
-		//System.out.println("Single thread "+ (t1-System.currentTimeMillis()));
-                //t1 = System.currentTimeMillis(); 
                 findTriangles(e1, threads, Size, 0);
-		//System.out.println("Find in threads "+ (t1-System.currentTimeMillis()));
-		//remove(L, array, l-limit, limit);
-                //findTriangles(e2, threads, Size, 0);
             }
             else{
+		pick = true;
                 limit = l-h;
 		System.out.println("H "+limit);
                 //if(limit > tnum)limit = tnum;
-		if(limit > threads*3000) limit = threads*3000;
+		if(limit > threads * 3000) limit = threads * 3000;
                 ArrayList<Edge> e = new ArrayList<Edge>();
-		long t1 = System.currentTimeMillis();
                 for(int i=0;i<limit;i++){
-                    //if (L.containsKey(array.get(h+1).vertex1) && L.containsKey(array.get(h+1).vertex2))e.add(new E(array.get(h+1), L.get(array.get(h+1).vertex1), L.get(array.get(h+1).vertex2)));
                     e.add(array.get(h+1));
-		    //move(H, S, array, h);
                     h+=1;
                 }
-		System.out.println("Single thread "+ (t1-System.currentTimeMillis()));
-		t1 = System.currentTimeMillis();
+		//System.out.println("Single thread "+ (t1-System.currentTimeMillis()));
+		//t1 = System.currentTimeMillis();
                 findTriangles(e, threads, Size, 1);
-		System.out.println("Find in threads "+ (t1-System.currentTimeMillis()));
+		//System.out.println("Find in threads "+ (t1-System.currentTimeMillis()));
             }
             if(h!= -1)r = Math.pow((double)(array.get(h).weight), p)+2*Math.pow((float)(array.get(l).weight), p);
             else r = Math.pow((double)(array.get(0).weight), p)+2*Math.pow((float)(array.get(l).weight), p);
