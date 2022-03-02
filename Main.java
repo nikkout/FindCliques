@@ -27,6 +27,7 @@ public class Main{
     Set<Triangle> TSet;
     PriorityBlockingQueue<Clique4> C4;
     int tnum;
+    int tnumexpensive;
     int threads;
     int Size;
     int cliqueSize;
@@ -35,8 +36,9 @@ public class Main{
     double ar = 1;
     
     public static void main(String Args[]){
+	long t1 = System.currentTimeMillis();
         if(Args.length <6){
-            System.out.println("Usage findCliques.jar <edges to read for each itteration> <threads> <find heaviest edges> <filename> <Clique size 3|4> <ar value>");
+            System.out.println("Usage findCliques.jar <edges to read for each itteration> <threads> <find heaviest edges> <filename> <Clique size 3|4> <ar value> <edges to read expensive>");
             return;
         }
         Main m = new Main(Args);
@@ -55,6 +57,7 @@ public class Main{
 	for(int i=0;i<20;i++){
 	    System.out.println(triangles[i]);
 	}
+	System.out.ptinrln(System.currentTimeMillis() - t1);
     }
     
     Main(String Args[]){
@@ -63,6 +66,7 @@ public class Main{
         this.Size = Integer.parseInt(Args[2])+1;
 	this.cliqueSize = Integer.parseInt(Args[4]);
 	this.ar = Double.parseDouble(Args[5]);
+	this.tnumexpensive = Integer.parseInt(Args[6]);
 	if(this.cliqueSize <3 || this.cliqueSize > 4){
 		System.out.println("Unsupported clique size: "+this.cliqueSize);
 		return;
@@ -71,7 +75,6 @@ public class Main{
         H = new HashMap<Integer, ArrayList<Tupple>>();
         HS = new HashMap<Integer, ArrayList<Tupple>>();
         S = new HashMap<Integer, ArrayList<Tupple>>();
-        array = new ArrayList<Edge>();
         T = new PriorityBlockingQueue<Triangle>(this.Size, new Comparator<Triangle>() {
             @Override
             public int compare(Triangle lhs, Triangle rhs) {
@@ -98,13 +101,16 @@ public class Main{
             //Scanner scanner = new Scanner(new File(fname));
 	    BufferedReader br = new BufferedReader(new FileReader(new File(fname)));
             String st;
-	    br.readLine();
+	    st = br.readLine();
+	    String[] tmp_arr = st.split(" ");
+            tmp1 = Integer.parseInt(tmp_arr[2]);
+	    this.array = new ArrayList<Edge>(tmp1);
 	    //while(scanner.hasNextInt()){
             while ((st = br.readLine()) != null){
                 counter++;
-                //if(counter % 100000 == 0)System.out.println(counter);
+                if(counter % 1000000 == 0)System.out.println(counter);
                 //Read a line
-                String[] tmp_arr = st.split(" ");
+                tmp_arr = st.split(" ");
                 tmp1 = Integer.parseInt(tmp_arr[0]);
                 tmp2 = Integer.parseInt(tmp_arr[1]);
                 tmp3 = Integer.parseInt(tmp_arr[2]);
@@ -146,11 +152,7 @@ public class Main{
 	Weighted currentPeek = null;
 	int currentSize = 0;
         while(currentPeek == null || currentPeek.get_weight() < threshold || currentSize<this.Size){//l<array.size()-1){
-            if( pick || Math.pow(array.get(l+1).weight, ar) > array.get(h+1).weight || l<=h){
-		pick = false;
-		//System.out.println(array.get(l+1).weight);
-		//System.out.println(Math.pow(array.get(h+1).weight, ar));
-                //find triangles with edge l+1 and two edges in S and H
+            if( Math.pow(array.get(l+1).weight, ar) > array.get(h+1).weight || l<=h){
                 limit = tnum;
                 if(array.size()-l <= tnum) limit = array.size()-l-1;
                 ArrayList<Edge> e1 = new ArrayList<Edge>();
@@ -166,17 +168,13 @@ public class Main{
 		pick = true;
                 limit = l-h;
 		System.out.println("H "+limit);
-                //if(limit > tnum)limit = tnum;
-		if(limit > threads * 3000) limit = threads * 3000;
+		if(limit > threads * tnumexpensive) limit = threads * tnumexpensive;
                 ArrayList<Edge> e = new ArrayList<Edge>();
                 for(int i=0;i<limit;i++){
                     e.add(array.get(h+1));
                     h+=1;
                 }
-		//System.out.println("Single thread "+ (t1-System.currentTimeMillis()));
-		//t1 = System.currentTimeMillis();
                 findTriangles(e, threads, Size, 1);
-		//System.out.println("Find in threads "+ (t1-System.currentTimeMillis()));
             }
             if(h!= -1)r = Math.pow((double)(array.get(h).weight), p)+2*Math.pow((float)(array.get(l).weight), p);
             else r = Math.pow((double)(array.get(0).weight), p)+2*Math.pow((float)(array.get(l).weight), p);
@@ -191,8 +189,8 @@ public class Main{
                 currentSize = this.C4.size();
                 currentPeek = this.C4.peek();
        	    }
-            System.out.println(T.size());
-            System.out.println("R: "+r);
+            //System.out.println(T.size());
+            //System.out.println("R: "+r);
             if(T.peek() != null)System.out.println(T.peek().weight);
             //System.out.println(C4.size());
             //System.out.println("D: "+d);
@@ -264,23 +262,6 @@ public class Main{
         try{
             for(int i=0;i<threads;i++){
                 threadsArray[i].join();
-                //Triangle[] trs = new Triangle[ft[i].T.size()];
-                //trs = ft[i].T.toArray(trs);
-                //for(int y=0;y<trs.length;y++){
-		//    this.T.add(trs[y]);
-		//}
-		int y = 0;
-		/*while(ft[i].triangle_array.length>y){
-                        Triangle tmp = ft[i].triangle_array[y];
-                        if(this.T.size() >= this.Size && this.T.peek().weight > tmp.weight) break;
-                        if(this.T.size() < this.Size && !T.contains(tmp)) this.T.put(tmp);
-                        else if(!T.contains(tmp)){
-                            this.T.poll();
-                            this.T.put(tmp);
-                        }
-			if(this.debug && ( this.ht == null || tmp.weight > this.ht.weight)) this.ht = tmp;
-			y++;
-                    }*/
             	while(this.cliqueSize>3){
                         Clique4 tmp = ft[i].C4.poll();
                         if(tmp == null) break;
@@ -291,7 +272,6 @@ public class Main{
                         }
                     }
             }
-            //System.out.println("Threads finished.");
         }
         catch(Exception exc){exc.printStackTrace();}
     }

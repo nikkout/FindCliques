@@ -10,11 +10,13 @@ o = open(sys.argv[2], "w")
 #start_pprof_server(port=8081)
 
 Edges = int(sys.argv[3])
+Vertices = int(sys.argv[4])
 weights = random.normal(70,15, size=Edges)
 
 i=0
 c = 0
 array = {}
+o.write("asd "+str(Vertices)+" "+str(Edges)+"\n")
 #Read the graph from the file, format (vertex a, vertex b, weight). Create the lists.
 for x in f:
     #t = (int(x.split(' ')[0]), int(x.split(' ')[1]), float(x.split(' ')[2].replace("\n", "")))
