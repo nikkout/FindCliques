@@ -57,7 +57,7 @@ public class Main{
 	for(int i=0;i<20;i++){
 	    System.out.println(triangles[i]);
 	}
-	System.out.ptinrln(System.currentTimeMillis() - t1);
+	System.out.println("Total time in millis: "+(System.currentTimeMillis() - t1));
     }
     
     Main(String Args[]){
@@ -108,7 +108,7 @@ public class Main{
 	    //while(scanner.hasNextInt()){
             while ((st = br.readLine()) != null){
                 counter++;
-                if(counter % 1000000 == 0)System.out.println(counter);
+                //if(counter % 1000000 == 0)System.out.println(counter);
                 //Read a line
                 tmp_arr = st.split(" ");
                 tmp1 = Integer.parseInt(tmp_arr[0]);
@@ -191,7 +191,7 @@ public class Main{
        	    }
             //System.out.println(T.size());
             //System.out.println("R: "+r);
-            if(T.peek() != null)System.out.println(T.peek().weight);
+            //if(T.peek() != null)System.out.println(T.peek().weight);
             //System.out.println(C4.size());
             //System.out.println("D: "+d);
             //if(C4.peek() != null)System.out.println(C4.peek().weight);
