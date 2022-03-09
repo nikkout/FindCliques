@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import java.lang.Math;
 import java.util.Collections;
@@ -17,7 +18,6 @@ class FindTriangles implements Runnable{
     E[] e;
     //PriorityBlockingQueue<Triangle> T;
     PriorityBlockingQueue<Clique4> C4;
-    HashMap<Edge, ArrayList<Clique4Value>> Clique_4;
     ArrayList<Triangle> triangles;
     static int counter = 0;
     HashSet<Triangle> Tl;
@@ -27,7 +27,6 @@ class FindTriangles implements Runnable{
 
     public FindTriangles(Parameters parameters){
         this.parameters = parameters;
-	this.Clique_4 = new HashMap<Edge, ArrayList<Clique4Value>>();
 	this.triangles = new ArrayList<Triangle>();
         FindTriangles.counter++;
 	Tl = new HashSet<Triangle>();
@@ -83,6 +82,10 @@ class FindTriangles implements Runnable{
                         Tupple b = v2.get(v2.indexOf(a));
                         Triangle tr = new Triangle(current.vertex1, current.vertex2, a.vertex, current.weight+a.weight+b.weight);
                         Tl.add(tr);
+			if(this.parameters.cliqueSize > 3){
+			    if (!this.parameters.Clique_4.containsKey(current)) this.parameters.Clique_4.put(current, Collections.synchronizedList(new ArrayList<Clique4Value>()));
+	            	    this.parameters.Clique_4.get(current).add(new Clique4Value(tr,a.vertex));
+		    	}
                     }
                 }
                 else{
@@ -93,6 +96,10 @@ class FindTriangles implements Runnable{
                         Tupple b = v1.get(v1.indexOf(a));
                         Triangle tr = new Triangle(current.vertex1, current.vertex2, a.vertex, current.weight+a.weight+b.weight);
                         Tl.add(tr);
+		 	if(this.parameters.cliqueSize > 3){
+			    if (!this.parameters.Clique_4.containsKey(current)) this.parameters.Clique_4.put(current, Collections.synchronizedList(new ArrayList<Clique4Value>()));
+                            this.parameters.Clique_4.get(current).add(new Clique4Value(tr,a.vertex));
+                        }
                     }
                 }
 	    }
@@ -107,6 +114,10 @@ class FindTriangles implements Runnable{
                         Tupple b = v2.get(v2.indexOf(a));
                         Triangle tr = new Triangle(current.vertex1, current.vertex2, a.vertex, current.weight+a.weight+b.weight);
                         Tl.add(tr);
+			if(this.parameters.cliqueSize > 3){
+                            if (!this.parameters.Clique_4.containsKey(current)) this.parameters.Clique_4.put(current, Collections.synchronizedList(new ArrayList<Clique4Value>()));
+                            this.parameters.Clique_4.get(current).add(new Clique4Value(tr,a.vertex));
+                        }
                     }
                 }
                 else{
@@ -117,6 +128,10 @@ class FindTriangles implements Runnable{
                         Tupple b = v1.get(v1.indexOf(a));
                         Triangle tr = new Triangle(current.vertex1, current.vertex2, a.vertex, current.weight+a.weight+b.weight);
                         Tl.add(tr);
+			if(this.parameters.cliqueSize > 3){
+                            if (!this.parameters.Clique_4.containsKey(current)) this.parameters.Clique_4.put(current, Collections.synchronizedList(new ArrayList<Clique4Value>()));
+                            this.parameters.Clique_4.get(current).add(new Clique4Value(tr,a.vertex));
+                        }
                     }
                 }
             }
@@ -131,6 +146,10 @@ class FindTriangles implements Runnable{
                         Tupple b = v2.get(v2.indexOf(a));
                         Triangle tr = new Triangle(current.vertex1, current.vertex2, a.vertex, current.weight+a.weight+b.weight);
                         Tl.add(tr);
+			if(this.parameters.cliqueSize > 3){
+                            if (!this.parameters.Clique_4.containsKey(current)) this.parameters.Clique_4.put(current, Collections.synchronizedList(new ArrayList<Clique4Value>()));
+                            this.parameters.Clique_4.get(current).add(new Clique4Value(tr,a.vertex));
+                        }
                     }
                 }
                 else{
@@ -141,6 +160,10 @@ class FindTriangles implements Runnable{
                         Tupple b = v1.get(v1.indexOf(a));
                         Triangle tr = new Triangle(current.vertex1, current.vertex2, a.vertex, current.weight+a.weight+b.weight);
                         Tl.add(tr);
+			if(this.parameters.cliqueSize > 3){
+                            if (!this.parameters.Clique_4.containsKey(current)) this.parameters.Clique_4.put(current, Collections.synchronizedList(new ArrayList<Clique4Value>()));
+                            this.parameters.Clique_4.get(current).add(new Clique4Value(tr,a.vertex));
+                        }
                     }
                 }
             }
@@ -155,6 +178,10 @@ class FindTriangles implements Runnable{
                         Tupple b = v2.get(v2.indexOf(a));
                         Triangle tr = new Triangle(current.vertex1, current.vertex2, a.vertex, current.weight+a.weight+b.weight);
                         Tl.add(tr);
+			if(this.parameters.cliqueSize > 3){
+                            if (!this.parameters.Clique_4.containsKey(current)) this.parameters.Clique_4.put(current, Collections.synchronizedList(new ArrayList<Clique4Value>()));
+                            this.parameters.Clique_4.get(current).add(new Clique4Value(tr,a.vertex));
+                        }
                     }
                 }
                 else{
@@ -165,6 +192,10 @@ class FindTriangles implements Runnable{
                         Tupple b = v1.get(v1.indexOf(a));
                         Triangle tr = new Triangle(current.vertex1, current.vertex2, a.vertex, current.weight+a.weight+b.weight);
                         Tl.add(tr);
+			if(this.parameters.cliqueSize > 3){
+                            if (!this.parameters.Clique_4.containsKey(current)) this.parameters.Clique_4.put(current, Collections.synchronizedList(new ArrayList<Clique4Value>()));
+                            this.parameters.Clique_4.get(current).add(new Clique4Value(tr,a.vertex));
+                        }
                     }
                 }
             }
@@ -174,7 +205,6 @@ class FindTriangles implements Runnable{
         Arrays.sort(this.triangle_array, new Comparator<Triangle>() {
             @Override
             public int compare(Triangle lhs, Triangle rhs) {
-                // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
                 return lhs.weight > rhs.weight ? -1 : (lhs.weight < rhs.weight) ? 1 : 0;
                 }
             });
@@ -193,50 +223,7 @@ class FindTriangles implements Runnable{
 	//System.out.println(Arrays.toString(this.triangle_array));
     }
 
-    private void clique4(){
-	Set<Edge> keys = this.Clique_4.keySet();
-        for(Edge key: keys){
-            ArrayList<Clique4Value> arr = this.Clique_4.get(key);
-	    for(int i=0;i<arr.size();i++){
-	        for(int y=i;y<arr.size();y++){
-		    int vertexA = arr.get(i).vertex;
-		    int vertexB = arr.get(y).vertex;
-		    int posL = -1, posH = -1;
-		    Tupple tmp = null;
-		    if(this.parameters.L.containsKey(vertexA)) posL = this.parameters.L.get(vertexA).indexOf(new Tupple(vertexB, 0));
-		    if(posL == -1 && this.parameters.HS.containsKey(vertexA)) posH = this.parameters.HS.get(vertexA).indexOf(new Tupple(vertexB, 0));
-	    	    if(posL != -1) tmp = this.parameters.L.get(vertexA).get(posL);
-	            else if(posH != -1) tmp = this.parameters.HS.get(vertexA).get(posH);
-		    if(tmp != null) {
-			    Triangle t1 = arr.get(i).triangle;
-			    Triangle t2 = arr.get(y).triangle;
-			    Clique4 clique = new Clique4(t1, t2, new Edge(arr.get(y).vertex, tmp.vertex, tmp.weight), t1.weight+t2.weight+tmp.weight-key.weight);
-			    if(C4.size()< this.parameters.Size && !C4.contains(clique)){
-                        C4.put(clique);
-                    }
-                    else if(C4.peek().weight < clique.weight && !C4.contains(clique)){
-                        C4.poll();
-                        C4.put(clique);
-                    }
-			    this.C4.add(new Clique4(t1, t2, new Edge(arr.get(y).vertex, tmp.vertex, tmp.weight), t1.weight+t2.weight+tmp.weight-key.weight));
-		    }
-                }
-	    }
-	}
-    }
-
     public void run() {
         this.Triangles();
-	if(this.parameters.cliqueSize>3)this.clique4();
     }
-}
-
-class Clique4Value{
-	Triangle triangle;
-	int vertex;
-
-	public Clique4Value(Triangle triangle, int vertex){
-		this.triangle = triangle;
-		this.vertex = vertex;
-	}
 }
