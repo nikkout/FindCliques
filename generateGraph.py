@@ -8,7 +8,7 @@ from numpy import random
 #Edges = 183831
 #Edges = 34681189
 Edges = 25571
-weights = random.normal(15, 2, Edges)
+weights = random.normal(70, 15, Edges)
 
 f = open("Email", "r")
 i=0
@@ -24,7 +24,7 @@ for x in f:
     t = (int(x.split(' ')[0]), int(x.split(' ')[1].replace("\n", "")), 1)
     t2 = (int(x.split(' ')[1]), int(x.split(' ')[0].replace("\n", "")), 1)
     if not t[0] == t[1] and (t2[0], t2[1]) not in array: 
-        array[(t[0], t[1])]=weights[i]
+        array[(t[0], t[1])]=weights[i]*10
         i+=1
 #print(array)
 f = open("EmailGen_half.data", "w")

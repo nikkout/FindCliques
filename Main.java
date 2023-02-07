@@ -25,6 +25,7 @@ public class Main{
     PriorityBlockingQueue<Triangle> T;
     //Set<Triangle> T;
     PriorityBlockingQueue<Clique4> C4;
+    PriorityBlockingQueue<Clique5> C5;
     int tnum;
     int threads;
     int Size;
@@ -48,7 +49,7 @@ public class Main{
         this.threads = Integer.parseInt(Args[1]);
         this.Size = Integer.parseInt(Args[2])+1;
 	this.cliqueSize = Integer.parseInt(Args[4]);
-	if(this.cliqueSize <3 || this.cliqueSize > 4){
+	if(this.cliqueSize <3 || this.cliqueSize > 5){
 		System.out.println("Unsupported clique size: "+this.cliqueSize);
 		return;
 	}
@@ -67,6 +68,13 @@ public class Main{
         C4 = new PriorityBlockingQueue<Clique4>(this.Size, new Comparator<Clique4>() {
             @Override
             public int compare(Clique4 lhs, Clique4 rhs) {
+                // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                return lhs.weight > rhs.weight ? 1 : (lhs.weight < rhs.weight) ? -1 : 0;
+            }
+        });
+        C5 = new PriorityBlockingQueue<Clique5>(this.Size, new Comparator<Clique5>() {
+            @Override
+            public int compare(Clique5 lhs, Clique5 rhs) {
                 // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
                 return lhs.weight > rhs.weight ? 1 : (lhs.weight < rhs.weight) ? -1 : 0;
             }
@@ -173,8 +181,9 @@ public class Main{
             if(C4.peek() != null)System.out.println(C4.peek().weight);
             if(currentPeek != null)System.out.println(currentPeek.get_weight());
         }
-        System.out.println(T.size());
-	    System.out.println(C4.size());
+        System.out.println("Triangles: "+T.size());
+	    System.out.println("C4: "+C4.size());
+        System.out.println("C5: "+C5.size());
 	    /*Clique4[] ca = new Clique4[C4.size()];
 	    ca = C4.toArray(ca);
 	    Triangle[] ta = new Triangle[T.size()];
@@ -250,6 +259,15 @@ public class Main{
                         else if(this.C4.peek().weight < tmp.weight && !C4.contains(tmp)){
                             this.C4.poll();
                             this.C4.put(tmp);
+                        }
+                    }
+                    while(this.cliqueSize>4){
+                        Clique5 tmp = ft[i].C5.poll();
+                        if(tmp == null) break;
+                        if(this.C5.size() < this.Size && !C5.contains(tmp)) this.C5.put(tmp);
+                        else if(this.C5.peek().weight < tmp.weight && !C5.contains(tmp)){
+                            this.C5.poll();
+                            this.C5.put(tmp);
                         }
                     }
             }
