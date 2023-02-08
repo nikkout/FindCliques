@@ -222,11 +222,11 @@ public class Main{
                 currentPeek = this.C4.peek();
        	    }
             //System.out.println(T.size());
-            System.out.println("R: "+r);
+            //System.out.println("R: "+r);
             //if(T.peek() != null)System.out.println(T.peek().weight);
-            System.out.println(C4.size());
-            System.out.println("D: "+d);
-            if(C4.peek() != null)System.out.println(C4.peek().weight);
+            //System.out.println(C4.size());
+            //System.out.println("D: "+d);
+            //if(C4.peek() != null)System.out.println(C4.peek().weight);
             //if(currentPeek != null)System.out.println(currentPeek.get_weight());
         }
         System.out.println(T.size());
