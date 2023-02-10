@@ -132,8 +132,8 @@ public class Main {
             BufferedReader br = new BufferedReader(new FileReader(new File(fname)));
             String st;
             st = br.readLine();
-            String[] tmp_arr = st.split("\t");
-            tmp1 = (int) Double.parseDouble(tmp_arr[2]);
+            String[] tmp_arr = st.split(" ");
+            tmp1 = Integer.parseInt(tmp_arr[2]);
             this.array = new ArrayList<Edge>(tmp1);
             // while(scanner.hasNextInt()){
             while ((st = br.readLine()) != null) {
