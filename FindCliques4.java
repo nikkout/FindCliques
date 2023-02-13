@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 
 class FindCliques4 implements Runnable {
@@ -60,12 +61,8 @@ class FindCliques4 implements Runnable {
                         if (this.parameters.cliqueSize > 4) {
                             if (!this.parameters.Clique_5.containsKey(t1))
                                 this.parameters.Clique_5.put(t1,
-                                        Collections.synchronizedList(new ArrayList<Clique5Value>()));
-                            this.parameters.Clique_5.get(t1).add(new Clique5Value(clique, vertexB));
-                            if (!this.parameters.Clique_5.containsKey(t2))
-                                this.parameters.Clique_5.put(t2,
-                                        Collections.synchronizedList(new ArrayList<Clique5Value>()));
-                            this.parameters.Clique_5.get(t2).add(new Clique5Value(clique, vertexA));
+                                        Collections.synchronizedMap(new HashMap<Integer, Clique4>()));
+                            this.parameters.Clique_5.get(t1).put(vertexB, clique);
                         }
                     }
                 }

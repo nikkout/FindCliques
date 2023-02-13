@@ -3,7 +3,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.stream.Collectors;
 
 class FindCliques5 implements Runnable {
 
@@ -34,36 +36,59 @@ class FindCliques5 implements Runnable {
             Edge current = parameters.e[n];
             if (!this.parameters.Clique_4.containsKey(current))
                 continue;
+            List<Tupple> exam1 = this.parameters.HS.get(current.vertex1);
+            List<Tupple> exam2 = this.parameters.HS.get(current.vertex2);
+            final List<Tupple> exam;
+            if(exam1.size() > exam2.size())exam = exam2;
+            else exam = exam1;
             List<Clique4Value> c4vs = this.parameters.Clique_4.get(current);
             c4vs.forEach(c4v -> {
                 if (!this.parameters.Clique_5.containsKey(c4v.triangle))
                     return;
-                List<Clique5Value> arr = this.parameters.Clique_5.get(c4v.triangle);
-                for (int i = 0; i < arr.size(); i++) {
-                    Clique5Value c5vi = arr.get(i);
-                    int vertexA = c5vi.vertex;
-                    for (int y = i; y < arr.size(); y++) {
-                        Clique5Value c5vy = arr.get(y);
-                        int vertexB = c5vy.vertex;
-                        int posL = -1, posH = -1;
-                        Tupple tmp = null;
-                        if (this.parameters.L.containsKey(vertexA))
-                            posL = this.parameters.L.get(vertexA).indexOf(new Tupple(vertexB, 0));
-                        if (posL == -1 && this.parameters.HS.containsKey(vertexA))
-                            posH = this.parameters.HS.get(vertexA).indexOf(new Tupple(vertexB, 0));
-                        if (posL != -1)
-                            tmp = this.parameters.L.get(vertexA).get(posL);
-                        else if (posH != -1)
-                            tmp = this.parameters.HS.get(vertexA).get(posH);
-                        if (tmp != null) {
-                            Clique4 c1 = c5vi.clique4;
-                            Clique4 c2 = c5vy.clique4;
-                            Clique5 clique = new Clique5(c1, c2, new Edge(c5vy.vertex, tmp.vertex, tmp.weight),
-                                    c1.weight + c2.weight + tmp.weight - current.weight);
+                Map<Integer, Clique4> arr = this.parameters.Clique_5.get(c4v.triangle);
+                /*this.parameters.HS.forEach((vertexA, list)->{
+                    list.stream().forEach(vertexB ->{
+                        if (arr.containsKey(vertexA) && arr.containsKey(vertexB.vertex)) {
+                            Clique4 c1 = arr.get(vertexA);
+                            Clique4 c2 = arr.get(vertexB.vertex);
+                            Clique5 clique = new Clique5(c1, c2, new Edge(vertexA, vertexB.vertex, vertexB.weight),
+                                    c1.weight + c2.weight + current.weight - c4v.triangle.weight);
                             C5Set.add(clique);
                         }
+                    });
+                });*/
+                /*for (int i = this.parameters.start; i < this.parameters.end; i++) {
+                    Edge currentI = parameters.e[i];
+                    if (arr.containsKey(currentI.vertex1) && arr.containsKey(currentI.vertex2)) {
+                        Clique4 c1 = arr.get(currentI.vertex1);
+                        Clique4 c2 = arr.get(currentI.vertex2);
+                        Clique5 clique = new Clique5(c1, c2, new Edge(currentI.vertex1, currentI.vertex2, currentI.weight),
+                                c1.weight + c2.weight + current.weight - c4v.triangle.weight);
+                        C5Set.add(clique);
                     }
-                }
+                }*/
+                /*this.parameters.array.forEach(edge ->{
+                    if (arr.containsKey(edge.vertex1) && arr.containsKey(edge.vertex2)) {
+                        Clique4 c1 = arr.get(edge.vertex1);
+                        Clique4 c2 = arr.get(edge.vertex2);
+                        Clique5 clique = new Clique5(c1, c2, new Edge(edge.vertex1, edge.vertex2, edge.weight),
+                                c1.weight + c2.weight + current.weight - c4v.triangle.weight);
+                        C5Set.add(clique);
+                    }
+                });*/
+                
+                exam.forEach(t->{
+                    this.parameters.HS.get(t.vertex).forEach(t2->{
+                        if(!arr.containsKey(t.vertex))return;
+                        if (arr.containsKey(t2.vertex)) {
+                            Clique4 c1 = arr.get(t.vertex);
+                            Clique4 c2 = arr.get(t2.vertex);
+                            Clique5 clique = new Clique5(c1, c2, new Edge(t.vertex, t2.vertex, t2.weight),
+                                    c1.weight + c2.weight + current.weight - c4v.triangle.weight);
+                            C5Set.add(clique);
+                        }
+                    });
+                });
             });
 
         }

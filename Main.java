@@ -20,6 +20,7 @@ public class Main {
     HashMap<Integer, ArrayList<Tupple>> HS;
     HashMap<Integer, ArrayList<Tupple>> S;
     ArrayList<Edge> array;
+    ArrayList<Edge> examined;
     PriorityBlockingQueue<Triangle> T;
     Set<Triangle> TSet;
     PriorityBlockingQueue<Clique4> C4;
@@ -27,7 +28,7 @@ public class Main {
     Map<Edge, List<Clique4Value>> Clique_4;
     PriorityBlockingQueue<Clique5> C5;
     Set<Clique5> C5Set;
-    Map<Triangle, List<Clique5Value>> Clique_5;
+    Map<Triangle, Map<Integer, Clique4>> Clique_5;
     int tnum;
     int tnumexpensive;
     int threads;
@@ -120,7 +121,7 @@ public class Main {
         this.C4Set = Collections.synchronizedSet(new HashSet<Clique4>(this.Size));
         this.Clique_4 = Collections.synchronizedMap(new HashMap<Edge, List<Clique4Value>>());
         this.C5Set = Collections.synchronizedSet(new HashSet<Clique5>(this.Size));
-        this.Clique_5 = Collections.synchronizedMap(new HashMap<Triangle, List<Clique5Value>>());
+        this.Clique_5 = Collections.synchronizedMap(new HashMap<Triangle, Map<Integer, Clique4>>());
     }
 
     void read(String fname) {
@@ -135,12 +136,13 @@ public class Main {
             String[] tmp_arr = st.split(" ");
             tmp1 = Integer.parseInt(tmp_arr[2]);
             this.array = new ArrayList<Edge>(tmp1);
+            this.examined = new ArrayList<Edge>();
             // while(scanner.hasNextInt()){
             while ((st = br.readLine()) != null) {
                 counter++;
                 // if(counter % 1000000 == 0)System.out.println(counter);
                 // Read a line
-                tmp_arr = st.split("\t");
+                tmp_arr = st.split(" ");
                 tmp1 = Integer.parseInt(tmp_arr[0]);
                 tmp2 = Integer.parseInt(tmp_arr[1]);
                 tmp3 = (int) Double.parseDouble(tmp_arr[2]);
@@ -227,9 +229,11 @@ public class Main {
             // d = (r+ht.weight+array.get(h+1).weight-array.get(l).weight);
             // }
             if (this.cliqueSize == 5) {
-                threshold = r4;
-                currentSize = this.C4.size();
-                currentPeek = this.C4.peek();
+                threshold = r5;
+                currentSize = this.C5.size();
+                currentPeek = this.C5.peek();
+                System.out.println(threshold);
+                System.out.println(currentPeek);
             } else if (this.cliqueSize == 4) {
                 threshold = r4;
                 currentSize = this.C4.size();
@@ -273,6 +277,7 @@ public class Main {
     void move(HashMap<Integer, ArrayList<Tupple>> rm, HashMap<Integer, ArrayList<Tupple>> add, ArrayList<Edge> array,
             int l) {
         Edge tmp = array.get(l + 1);
+        examined.add(tmp);
         rm.get(tmp.vertex1).remove(new Tupple(tmp.vertex2, 0));
         rm.get(tmp.vertex2).remove(new Tupple(tmp.vertex1, 0));
         if (rm.get(tmp.vertex1).size() == 0)
@@ -354,11 +359,11 @@ public class Main {
                 if (i == threads - 1)
                     fq[i] = new FindCliques4(new Parameters(arrayEdges, i * size, (i + 1) * size + rem, Size, this.L,
                             this.HS, this.cliqueSize, this.debug, this.T, this.TSet, mode, this.C4, this.C4Set,
-                            this.Clique_4, this.C5, this.C5Set, this.Clique_5));
+                            this.Clique_4, this.C5, this.C5Set, this.Clique_5, this.array));
                 else
                     fq[i] = new FindCliques4(new Parameters(arrayEdges, i * size, (i + 1) * size, Size, this.L, this.HS,
                             this.cliqueSize, this.debug, this.T, this.TSet, mode, this.C4, this.C4Set, this.Clique_4,
-                            this.C5, this.C5Set, this.Clique_5));
+                            this.C5, this.C5Set, this.Clique_5, this.array));
                 Thread thread = new Thread(fq[i]);
                 thread.start();
                 threadsArray[i] = thread;
@@ -377,11 +382,11 @@ public class Main {
                 if (i == threads - 1)
                     fq[i] = new FindCliques5(new Parameters(arrayEdges, i * size, (i + 1) * size + rem, Size, this.L,
                             this.HS, this.cliqueSize, this.debug, this.T, this.TSet, mode, this.C4, this.C4Set,
-                            this.Clique_4, this.C5, this.C5Set, this.Clique_5));
+                            this.Clique_4, this.C5, this.C5Set, this.Clique_5, this.array));
                 else
                     fq[i] = new FindCliques5(new Parameters(arrayEdges, i * size, (i + 1) * size, Size, this.L, this.HS,
                             this.cliqueSize, this.debug, this.T, this.TSet, mode, this.C4, this.C4Set, this.Clique_4,
-                            this.C5, this.C5Set, this.Clique_5));
+                            this.C5, this.C5Set, this.Clique_5, this.array));
                 Thread thread = new Thread(fq[i]);
                 thread.start();
                 threadsArray[i] = thread;

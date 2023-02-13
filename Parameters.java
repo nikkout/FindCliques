@@ -23,7 +23,8 @@ class Parameters {
 	Set<Triangle> TSet;
 	int mode;
 	Map<Edge, List<Clique4Value>> Clique_4;
-	Map<Triangle, List<Clique5Value>> Clique_5;
+	Map<Triangle, Map<Integer, Clique4>> Clique_5;
+	ArrayList<Edge> array;
 
 	public Parameters(Edge[] e, int start, int end, int Size, HashMap<Integer, ArrayList<Tupple>> L,
 			HashMap<Integer, ArrayList<Tupple>> HS, int cliqueSize, boolean debug, PriorityBlockingQueue<Triangle> T,
@@ -49,7 +50,7 @@ class Parameters {
 			HashMap<Integer, ArrayList<Tupple>> HS, int cliqueSize, boolean debug, PriorityBlockingQueue<Triangle> T,
 			Set<Triangle> TSet, int mode, PriorityBlockingQueue<Clique4> C4, Set<Clique4> C4Set,
 			Map<Edge, List<Clique4Value>> Clique_4, PriorityBlockingQueue<Clique5> C5, Set<Clique5> C5Set,
-			Map<Triangle, List<Clique5Value>> Clique_5) {
+			Map<Triangle, Map<Integer, Clique4>> Clique_5, ArrayList<Edge> array) {
 		this.e = e;
 		this.start = start;
 		this.end = end;
@@ -67,5 +68,6 @@ class Parameters {
 		this.C5 =C5;
 		this.C5Set = C5Set;
 		this.Clique_5 = Clique_5;
+		this.array = array;
 	}
 }
