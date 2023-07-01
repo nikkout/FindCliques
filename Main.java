@@ -10,6 +10,7 @@ import java.lang.Math;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.io.BufferedReader;
@@ -125,7 +126,7 @@ public class Main {
         this.Clique_4 = Collections.synchronizedMap(new HashMap<Edge, List<Clique4Value>>());
         this.C5Set = Collections.synchronizedSet(new HashSet<Clique5>(this.Size));
         this.Clique_5 = Collections.synchronizedMap(new HashMap<Triangle, Map<Integer, Clique4>>());
-        this.executor = new ThreadPoolExecutor(this.threads, this.threads+5, 2, TimeUnit.SECONDS, new PriorityBlockingQueue<Runnable>());
+        this.executor = new ThreadPoolExecutor(this.threads, this.threads+5, 2, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(this.threads+5));
     }
 
     void read(String fname) {
