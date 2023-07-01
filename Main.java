@@ -10,6 +10,8 @@ import java.lang.Math;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
@@ -37,6 +39,7 @@ public class Main {
     Triangle ht = new Triangle(0, 0, 0, 0);
     boolean debug = true;
     double ar = 1;
+    ThreadPoolExecutor executor;
 
     public static void main(String Args[]) {
         long t1 = System.currentTimeMillis();
@@ -122,6 +125,7 @@ public class Main {
         this.Clique_4 = Collections.synchronizedMap(new HashMap<Edge, List<Clique4Value>>());
         this.C5Set = Collections.synchronizedSet(new HashSet<Clique5>(this.Size));
         this.Clique_5 = Collections.synchronizedMap(new HashMap<Triangle, Map<Integer, Clique4>>());
+        this.executor = new ThreadPoolExecutor(this.threads, this.threads+5, 2, TimeUnit.SECONDS, new PriorityBlockingQueue<Runnable>());
     }
 
     void read(String fname) {
@@ -327,13 +331,15 @@ public class Main {
             else
                 ft[i] = new FindTriangles(new Parameters(arrayEdges, i * size, (i + 1) * size, Size, this.L, this.HS,
                         this.cliqueSize, this.debug, this.T, this.TSet, mode, this.C4, this.C4Set, this.Clique_4));
-            Thread thread = new Thread(ft[i]);
-            thread.start();
-            threadsArray[i] = thread;
+            //Thread thread = new Thread(ft[i]);
+            this.executor.execute(ft[i]);
+            // thread.start();
+            // threadsArray[i] = thread;
         }
         try {
-            for (int i = 0; i < threads; i++) {
-                threadsArray[i].join();
+            while(this.executor.getActiveCount() >0)
+            for (int i = 0; i < ft.length; i++) {
+                // threadsArray[i].join();
                 if (ft[i].triangle_array.length == 0)
                     continue;
                 if (this.ht.weight < ft[i].triangle_array[0].weight)
