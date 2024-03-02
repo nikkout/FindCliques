@@ -1,7 +1,10 @@
 package utils;
 
-import java.util.ArrayList;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class EdgeLists {
 	@Override
 	public String toString() {
@@ -9,36 +12,22 @@ public class EdgeLists {
 	}
 
 	private Edge edge;
-	private ArrayList<Vertex> A;
-	private ArrayList<Vertex> B;
+	private double[] A;
+	private double[] B;
+	private double[] AP;
+	private double[] BP;
     
-    public EdgeLists(Edge edge, ArrayList<Vertex> A, ArrayList<Vertex> B){
+    public EdgeLists(Edge edge, double[] A, double[] B){
         this.edge = edge;
         this.A = A;
         this.B = B;
     }
-
-	public Edge getEdge() {
-		return edge;
-	}
-
-	public void setEdge(Edge edge) {
-		this.edge = edge;
-	}
-
-	public ArrayList<Vertex> getA() {
-		return A;
-	}
-
-	public void setA(ArrayList<Vertex> a) {
-		A = a;
-	}
-
-	public ArrayList<Vertex> getB() {
-		return B;
-	}
-
-	public void setB(ArrayList<Vertex> b) {
-		B = b;
-	}
+    
+    public EdgeLists(Edge edge, double[] A, double[] B, double[] AP, double[] BP){
+        this.edge = edge;
+        this.A = A;
+        this.B = B;
+        this.AP = AP;
+        this.BP = BP;
+    }
 }

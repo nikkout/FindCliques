@@ -56,7 +56,7 @@ public class TestFindTriangles {
 			Edge edge = graph.getArray().get(y);
 			ArrayList<Triangle> triangles = findTrianglesForEdge(graph.getAdjacencyMatrixW(), edge);
 			if(triangles.size()==0)continue;
-			EdgeLists e = new EdgeLists(edge, graph.getL().get(edge.getVertex1()),graph.getL().get(edge.getVertex2()));
+			EdgeLists e = new EdgeLists(edge, graph.getL()[edge.getVertex1()],graph.getL()[edge.getVertex2()]);
 			ArrayList<Triangle> triangles2 = ft.findTriangles(e);
 			Collections.sort(triangles2, new Comparator<Triangle>() {
 				@Override

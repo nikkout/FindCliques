@@ -36,25 +36,11 @@ public class ReadGraph {
 				if (tmp1 == tmp2)
 					continue;
 				double tmp3 = Math.abs(rand.nextGaussian() * 7);
-				Vertex v1 = new Vertex(tmp1, tmp3);
-				Vertex v2 = new Vertex(tmp2, tmp3);
-				if (!graph.getL().containsKey(tmp1)) {
-					graph.getL().put(tmp1, new ArrayList<Vertex>());
-				}
-				if (!graph.getL().get(tmp1).contains(v2)) {
-					graph.getL().get(tmp1).add(v2);
-				}
-					
-				if (!graph.getL().containsKey(tmp2)) {
-					graph.getL().put(tmp2, new ArrayList<Vertex>());
-				}
-				if (!graph.getL().get(tmp2).contains(v1)) {
-					graph.getL().get(tmp2).add(v1);
-				}
 				Edge tmp = new Edge(tmp1, tmp2, tmp3);
 				if (!graph.getArray().contains(tmp))
 					graph.getArray().add(tmp);
 			}
+			graph.getAdjacencyMatrixW();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -82,29 +68,17 @@ public class ReadGraph {
 					continue;
 				double tmp3 = Math.abs(rand.nextGaussian() * 7);
 				double tmp4 = Math.abs(rand.nextGaussian())%1;
-				Vertex v1 = new Vertex(tmp1, tmp3, tmp4);
-				Vertex v2 = new Vertex(tmp2, tmp3, tmp4);
-				if (!graph.getL().containsKey(tmp1)) {
-					graph.getL().put(tmp1, new ArrayList<Vertex>());
-				}
-				if (!graph.getL().get(tmp1).contains(v2)) {
-					graph.getL().get(tmp1).add(v2);
-				}
-					
-				if (!graph.getL().containsKey(tmp2)) {
-					graph.getL().put(tmp2, new ArrayList<Vertex>());
-				}
-				if (!graph.getL().get(tmp2).contains(v1)) {
-					graph.getL().get(tmp2).add(v1);
-				}
 				Edge tmp = new Edge(tmp1, tmp2, tmp3, tmp4);
 				if (!graph.getArray().contains(tmp))
 					graph.getArray().add(tmp);
 			}
+			graph.getAdjacencyMatrixP();
+			graph.getAdjacencyMatrixW();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		graph.sortArrayWeight();
+		graph.sortArrayProbability();
 	}
 
 	/**
@@ -123,20 +97,11 @@ public class ReadGraph {
 				tmp1 = scanner.nextInt();
 				tmp2 = scanner.nextInt();
 				tmp3 = scanner.nextDouble();
-				if (!graph.getL().containsKey(tmp1)) {
-					graph.getL().put(tmp1, new ArrayList<Vertex>());
-				}
-				if (graph.getL().get(tmp1).contains(new Vertex(tmp2, tmp3)))
-					graph.getL().get(tmp1).add(new Vertex(tmp2, tmp3));
-				if (!graph.getL().containsKey(tmp2)) {
-					graph.getL().put(tmp2, new ArrayList<Vertex>());
-				}
-				if (graph.getL().get(tmp1).contains(new Vertex(tmp1, tmp3)))
-					graph.getL().get(tmp2).add(new Vertex(tmp1, tmp3));
 				Edge tmp = new Edge(tmp1, tmp2, tmp3);
 				if (!graph.getArray().contains(tmp))
 					graph.getArray().add(tmp);
 			}
+			graph.getAdjacencyMatrixW();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -156,21 +121,16 @@ public class ReadGraph {
 				tmp2 = scanner.nextInt();
 				tmp3 = scanner.nextDouble();
 				tmp4 = scanner.nextDouble();
-				if (!graph.getL().containsKey(tmp1)) {
-					graph.getL().put(tmp1, new ArrayList<Vertex>());
-				}
-				graph.getL().get(tmp1).add(new Vertex(tmp2, tmp3, tmp4));
-				if (!graph.getL().containsKey(tmp2)) {
-					graph.getL().put(tmp2, new ArrayList<Vertex>());
-				}
-				graph.getL().get(tmp2).add(new Vertex(tmp1, tmp3, tmp4));
 				Edge tmp = new Edge(tmp1, tmp2, tmp3, tmp4);
 				graph.getArray().add(tmp);
 			}
+			graph.getAdjacencyMatrixP();
+			graph.getAdjacencyMatrixW();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		graph.sortArrayWeight();
+		graph.sortArrayProbability();
 	}
 
 	public Graph getGraph() {
