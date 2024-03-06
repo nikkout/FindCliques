@@ -27,8 +27,8 @@ public class Baseline {
 
 	protected ArrayList<Edge> array;
 	protected ArrayList<Edge> arrayP;
-	private double[][] HS;
-	private double[][] L;
+	private HashMap<Integer, ArrayList<Vertex>> HS;
+	private HashMap<Integer, ArrayList<Vertex>> L;
 	protected PriorityQueue<Triangle> T;
 	protected HashSet<Triangle> TSet;
 
@@ -78,8 +78,8 @@ public class Baseline {
 		double threshold = 0;
 		MutableDouble thresholdP = new MutableDouble(2);
 		int p = 1;
-		while (currentPeek == null || currentSize < size || (currentPeek.getProbability() < thresholdP.getValue() && currentPeek.getWeight() < threshold )) {
-			log.info("{}", thresholdP.getValue());
+		while (currentPeek == null || currentSize < size
+				|| (currentPeek.getProbability() < thresholdP.getValue() && currentPeek.getWeight() < threshold)) {
 			if (array.get(l + 1).getWeight() > Math.pow(array.get(h + 1).getWeight(), ar) || l == h) {
 				this.move(L, HS, array, l);
 				EdgeLists[] e = null;
@@ -106,15 +106,13 @@ public class Baseline {
 		return T;
 
 	}
-	
+
 	protected double computeThreshold(int h, int l, int p, MutableDouble thresholdP) {
 		double r;
 		if (h != -1)
-			r = Math.pow((double) (array.get(h).getWeight()), p)
-					+ 2 * Math.pow((double) (array.get(l).getWeight()), p);
+			r = Math.pow((double) (array.get(h).getWeight()), p) + 2 * Math.pow((double) (array.get(l).getWeight()), p);
 		else
-			r = Math.pow((double) (array.get(0).getWeight()), p)
-					+ 2 * Math.pow((double) (array.get(l).getWeight()), p);
+			r = Math.pow((double) (array.get(0).getWeight()), p) + 2 * Math.pow((double) (array.get(l).getWeight()), p);
 		return r;
 	}
 
@@ -122,28 +120,32 @@ public class Baseline {
 		EdgeLists[] e = new EdgeLists[3];
 		int v1 = edge.getVertex1();
 		int v2 = edge.getVertex2();
-		e[0] = new EdgeLists(edge, HS[v1], HS[v2]);
-		e[1] = new EdgeLists(edge, HS[v1], L[v2]);
-		e[2] = new EdgeLists(edge, HS[v2], L[v1]);
-		return e;
-	}
-	
-	protected EdgeLists createEdgeListsHigh(Edge edge, Graph graph) {
-		int v1 = edge.getVertex1();
-		int v2 = edge.getVertex2();
-		EdgeLists e = new EdgeLists(edge, L[v1], L[v2]);
+		e[0] = new EdgeLists(edge, HS.get(v1), HS.get(v2));
+		e[1] = new EdgeLists(edge, HS.get(v1), L.get(v2));
+		e[2] = new EdgeLists(edge, HS.get(v2), L.get(v1));
 		return e;
 	}
 
-	protected void move(double[][] rm, double[][] add, ArrayList<Edge> array, int l) {
+	protected EdgeLists createEdgeListsHigh(Edge edge, Graph graph) {
+		int v1 = edge.getVertex1();
+		int v2 = edge.getVertex2();
+		EdgeLists e = new EdgeLists(edge, L.get(v1), L.get(v2));
+		return e;
+	}
+
+	protected void move(HashMap<Integer, ArrayList<Vertex>> rm, HashMap<Integer, ArrayList<Vertex>> add,
+			ArrayList<Edge> array, int l) {
 		Edge tmp = array.get(l + 1);
 		int v1 = tmp.getVertex1();
 		int v2 = tmp.getVertex2();
-		double tmpW = rm[v1][v2];
-		rm[v1][v2] = 0;
-		rm[v2][v1] = 0;
-		add[v1][v2] = tmpW;
-		add[v2][v1] = tmpW;
+		rm.get(v1).remove(rm.get(v1).indexOf(new Vertex(v2, 0)));
+		rm.get(v2).remove(rm.get(v2).indexOf(new Vertex(v1, 0)));
+		if (!add.containsKey(v1))
+			add.put(v1, new ArrayList<Vertex>());
+		add.get(v1).add(new Vertex(v2, tmp.getWeight()));
+		if (!add.containsKey(v2))
+			add.put(v2, new ArrayList<Vertex>());
+		add.get(v2).add(new Vertex(v1, tmp.getWeight()));
 	}
 
 	protected void findTriangles(EdgeLists e, int size) {

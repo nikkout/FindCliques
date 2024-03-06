@@ -52,11 +52,12 @@ public class TestFindTriangles {
 		rg.readVV();
 		Graph graph = rg.getGraph();
 		graph.toFileW(new File("email-Eu-coreW.txt"));
-		for(int y=0;y<100;y++) {
+		for (int y = 0; y < 100; y++) {
 			Edge edge = graph.getArray().get(y);
 			ArrayList<Triangle> triangles = findTrianglesForEdge(graph.getAdjacencyMatrixW(), edge);
-			if(triangles.size()==0)continue;
-			EdgeLists e = new EdgeLists(edge, graph.getL()[edge.getVertex1()],graph.getL()[edge.getVertex2()]);
+			if (triangles.size() == 0)
+				continue;
+			EdgeLists e = new EdgeLists(edge, graph.getL().get(edge.getVertex1()), graph.getL().get(edge.getVertex2()));
 			ArrayList<Triangle> triangles2 = ft.findTriangles(e);
 			Collections.sort(triangles2, new Comparator<Triangle>() {
 				@Override
@@ -71,12 +72,13 @@ public class TestFindTriangles {
 //			triangles2.forEach(triangle -> {
 //				System.out.println(triangle);
 //			});
-			assertTrue(triangles.size() + " is not equal to " + triangles2.size(), triangles.size() == triangles2.size());
-			for(int i=0;i<triangles.size();i++) {
+			assertTrue(triangles.size() + " is not equal to " + triangles2.size(),
+					triangles.size() == triangles2.size());
+			for (int i = 0; i < triangles.size(); i++) {
 				Triangle t1 = triangles.get(i);
 				Triangle t2 = triangles2.get(i);
 //				System.out.println(triangles.get(i) + " --- " + triangles2.get(i));
-				 assertTrue(t1 + " is not equal to " + t2, t1.equals(t2));
+				assertTrue(t1 + " is not equal to " + t2, t1.equals(t2));
 			}
 		}
 	}

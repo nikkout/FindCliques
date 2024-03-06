@@ -3,16 +3,18 @@ package baseline;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 
 import utils.Edge;
 import utils.EdgeLists;
 import utils.Graph;
 import utils.Triangle;
+import utils.Vertex;
 
-public class BaselineP extends Baseline{
-	
+public class BaselineP extends Baseline {
+
 	private double proba;
-	
+
 	public void setProba(double proba) {
 		this.proba = proba;
 	}
@@ -35,7 +37,7 @@ public class BaselineP extends Baseline{
 			Triangle newT = newTriangles.get(i);
 			if (newT == null || (T.size() >= size && newT.getWeight() < peek.getWeight()))
 				break;
-			if(newT.getProbability() < this.proba) {
+			if (newT.getProbability() < this.proba) {
 				i++;
 				continue;
 			}
@@ -50,29 +52,29 @@ public class BaselineP extends Baseline{
 			i++;
 		}
 	}
-	
+
 	@Override
 	protected EdgeLists[] createEdgeListsLow(Edge edge, Graph graph) {
 		EdgeLists[] e = new EdgeLists[3];
 		int v1 = edge.getVertex1();
 		int v2 = edge.getVertex2();
-		double[][] HS = graph.getHS();
-		double[][] HSP = graph.getHSP();
-		double[][] L = graph.getL();
-		double[][] LP = graph.getLP();
-		e[0] = new EdgeLists(edge, HS[v1], HS[v2], HSP[v1], HSP[v2]);
-		e[1] = new EdgeLists(edge, HS[v1], L[v2], HSP[v1], LP[v2]);
-		e[2] = new EdgeLists(edge, HS[v2], L[v1], HSP[v2], LP[v1]);
+		HashMap<Integer, ArrayList<Vertex>> HS = graph.getHS();
+		HashMap<Integer, ArrayList<Vertex>> HSP = graph.getHSP();
+		HashMap<Integer, ArrayList<Vertex>> L = graph.getL();
+		HashMap<Integer, ArrayList<Vertex>> LP = graph.getLP();
+		e[0] = new EdgeLists(edge, HS.get(v1), HS.get(v2));
+		e[1] = new EdgeLists(edge, HS.get(v1), L.get(v2));
+		e[2] = new EdgeLists(edge, HS.get(v2), L.get(v1));
 		return e;
 	}
-	
+
 	@Override
 	protected EdgeLists createEdgeListsHigh(Edge edge, Graph graph) {
 		int v1 = edge.getVertex1();
 		int v2 = edge.getVertex2();
-		double[][] L = graph.getL();
-		double[][] LP = graph.getLP();
-		EdgeLists e = new EdgeLists(edge, L[v1], L[v2], LP[v1], LP[v2]);
+		HashMap<Integer, ArrayList<Vertex>> L = graph.getL();
+		HashMap<Integer, ArrayList<Vertex>> LP = graph.getLP();
+		EdgeLists e = new EdgeLists(edge, L.get(v1), L.get(v2));
 		return e;
 	}
 }

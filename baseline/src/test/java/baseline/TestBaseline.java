@@ -16,7 +16,7 @@ import utils.ReadGraph;
 import utils.Time;
 import utils.Triangle;
 
-public class TestBaseline extends Common{
+public class TestBaseline extends Common {
 
 	@Test
 	public void testBaseline100() {
@@ -27,14 +27,15 @@ public class TestBaseline extends Common{
 		rg.readVV();
 		Graph graph = rg.getGraph();
 		graph.toFileW(new File("email-Eu-coreW.txt"));
-		ArrayList<Triangle> triangles = time.executeBruteForce(this::fullEnum, graph.getL(), "Brute Force");
+		ArrayList<Triangle> triangles = time.executeBruteForce(this::fullEnum, graph.getAdjacencyMatrixW(),
+				"Brute Force");
 		PriorityQueue<Triangle> topKT = time.executeAlgorithm(bl::findTriangles, graph, 100, "Algorithm");
 		for (int i = 99; i >= 0; i--) {
 			Triangle peak = topKT.poll();
 			assertTrue(peak + " is not equal to " + triangles.get(i), peak.equals(triangles.get(i)));
 		}
 	}
-	
+
 	@Test
 	public void testBaseline1000() {
 		Time time = new Time();
@@ -44,7 +45,8 @@ public class TestBaseline extends Common{
 		rg.readVV();
 		Graph graph = rg.getGraph();
 		graph.toFileW(new File("email-Eu-coreW.txt"));
-		ArrayList<Triangle> triangles = time.executeBruteForce(this::fullEnum, graph.getL(), "Brute Force");
+		ArrayList<Triangle> triangles = time.executeBruteForce(this::fullEnum, graph.getAdjacencyMatrixW(),
+				"Brute Force");
 		PriorityQueue<Triangle> topKT = time.executeAlgorithm(bl::findTriangles, graph, 1000, "Algorithm");
 		for (int i = 999; i >= 0; i--) {
 			Triangle peak = topKT.poll();

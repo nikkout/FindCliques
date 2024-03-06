@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.Setter;
@@ -15,16 +16,19 @@ import lombok.Getter;
 @Setter
 @Getter
 public class Graph {
-	private double[][] L;
-	private double[][] LP;
-//	private HashMap<Integer, ArrayList<Vertex>> H;
-	private double[][] HS;
-	private double[][] HSP;
+	private HashMap<Integer, ArrayList<Vertex>> L;
+	private HashMap<Integer, ArrayList<Vertex>> LP;
+	private HashMap<Integer, ArrayList<Vertex>> HS;
+	private HashMap<Integer, ArrayList<Vertex>> HSP;
 	private ArrayList<Edge> array;
 	private ArrayList<Edge> arrayP;
 
 	public Graph() {
 		this.array = new ArrayList<>();
+		this.L = new HashMap<>();
+		this.LP = new HashMap<>();
+		this.HS = new HashMap<>();
+		this.HSP = new HashMap<>();
 	}
 
 	public void sortArrayWeight() {
@@ -103,34 +107,31 @@ public class Graph {
 
 	public double[][] getAdjacencyMatrix() {
 		int V = findMaxVertex() + 1;
-		this.L = new double[V][V];
-		this.HS = new double[V][V];
+		double[][] matrix = new double[V][V];
 		this.array.forEach(e -> {
-			this.L[e.getVertex1()][e.getVertex2()] = 1;
-			this.L[e.getVertex2()][e.getVertex1()] = 1;
+			matrix[e.getVertex1()][e.getVertex2()] = 1;
+			matrix[e.getVertex2()][e.getVertex1()] = 1;
 		});
-		return this.L;
+		return matrix;
 	}
 
 	public double[][] getAdjacencyMatrixW() {
 		int V = findMaxVertex() + 1;
-		this.L = new double[V][V];
-		this.HS = new double[V][V];
+		double[][] matrix = new double[V][V];
 		this.array.forEach(e -> {
-			this.L[e.getVertex1()][e.getVertex2()] = e.getWeight();
-			this.L[e.getVertex2()][e.getVertex1()] = e.getWeight();
+			matrix[e.getVertex1()][e.getVertex2()] = e.getWeight();
+			matrix[e.getVertex2()][e.getVertex1()] = e.getWeight();
 		});
-		return this.L;
+		return matrix;
 	}
 	
 	public double[][] getAdjacencyMatrixP() {
 		int V = findMaxVertex() + 1;
-		this.LP = new double[V][V];
-		this.HSP = new double[V][V];
+		double[][] matrix = new double[V][V];
 		this.array.forEach(e -> {
-			this.LP[e.getVertex1()][e.getVertex2()] = e.getProbability();
-			this.LP[e.getVertex2()][e.getVertex1()] = e.getProbability();
+			matrix[e.getVertex1()][e.getVertex2()] = e.getProbability();
+			matrix[e.getVertex2()][e.getVertex1()] = e.getProbability();
 		});
-		return this.LP;
+		return matrix;
 	}
 }
