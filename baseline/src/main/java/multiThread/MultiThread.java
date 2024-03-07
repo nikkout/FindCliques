@@ -30,7 +30,7 @@ public class MultiThread {
 	private int threads;
 	protected Set<Triangle> TSet;
 	protected PriorityBlockingQueue<Triangle> T;
-	
+
 	protected ArrayList<Edge> array;
 	protected ArrayList<Edge> arrayP;
 	protected HashMap<Integer, ArrayList<Vertex>> HS;
@@ -38,17 +38,20 @@ public class MultiThread {
 	protected Graph graph;
 	protected int size;
 
-	public MultiThread(int threads, Graph graph, int size) {
+	private int edgesToReadPerThread;
+
+	public MultiThread(int threads, Graph graph, int size, int edgesToReadPerThread) {
 		this.executorService = Executors.newFixedThreadPool(threads);
 		this.threads = threads;
-		
+		this.edgesToReadPerThread = edgesToReadPerThread;
+
 		array = graph.getArray();
 		arrayP = graph.getArrayP();
 		HS = graph.getHS();
 		L = graph.getL();
 		this.graph = graph;
 		this.size = size;
-		
+
 		this.TSet = Collections.synchronizedSet(new HashSet<Triangle>());
 		T = new PriorityBlockingQueue<Triangle>(size, new Comparator<Triangle>() {
 			@Override
@@ -57,7 +60,11 @@ public class MultiThread {
 			}
 		});
 	}
-	
+
+	public MultiThread(int threads, Graph graph, int size) {
+		this(threads, graph, size, 1);
+	}
+
 	public PriorityBlockingQueue<Triangle> findTrianglesMultiThread() {
 		int l = -1;
 		int h = -1;
@@ -69,7 +76,7 @@ public class MultiThread {
 		int p = 1;
 		while (currentPeek == null || currentSize < size
 				|| (currentPeek.getProbability() < thresholdP.getValue() && currentPeek.getWeight() < threshold)) {
-			if (array.get(l + 1).getWeight() > Math.pow(array.get(h + 1).getWeight(), ar) || l == h) {
+			if (l+1 < this.array.size() && (array.get(l + 1).getWeight() > Math.pow(array.get(h + 1).getWeight(), ar) || l == h)) {
 				l = hsSearch(l);
 			} else {
 				h = lSearch(h);
@@ -84,14 +91,30 @@ public class MultiThread {
 	protected int hsSearch(int l) {
 		final AtomicInteger atomicL = new AtomicInteger(l);
 		final ArrayList<Callable<Object>> callableArray = new ArrayList<>();
+		final int tmp;
+		final int rem;
+		if(l+1+(this.edgesToReadPerThread*this.threads) >= this.array.size()) {
+			tmp = (this.array.size()-l-1)/this.threads;
+			rem = (this.array.size()-l-1)%this.threads;
+		}
+		else {
+			tmp = this.edgesToReadPerThread;
+			rem = 0;
+		}
 		for (int i = 0; i < this.threads; i++) {
-			this.move(L, HS, array, atomicL.get());
-			Edge edge = array.get(atomicL.incrementAndGet());
-			final EdgeLists[] e = createEdgeListsLow(edge, graph);
+			final EdgeLists[][] e = new EdgeLists[rem+tmp][];
+			final int lim = i == 0 ? rem+tmp : tmp;
+			for (int y = 0; y < lim; y++) {
+				this.move(L, HS, array, atomicL.get());
+				Edge edge = array.get(atomicL.incrementAndGet());
+				e[y] = createEdgeListsLow(edge, graph);
+			}
 			callableArray.add(() -> {
-				findTriangles(e[0], size);
-				findTriangles(e[1], size);
-				findTriangles(e[2], size);
+				for (int y = 0; y < lim; y++) {
+					findTriangles(e[y][0], size);
+					findTriangles(e[y][1], size);
+					findTriangles(e[y][2], size);
+				}
 				return null;
 			});
 		}
@@ -104,15 +127,30 @@ public class MultiThread {
 		return atomicL.get();
 	}
 
-	
 	protected int lSearch(int h) {
 		final AtomicInteger atomicH = new AtomicInteger(h);
 		final ArrayList<Callable<Object>> callableArray = new ArrayList<>();
+		final int tmp;
+		final int rem;
+		if(h+1+(this.edgesToReadPerThread*this.threads) >= this.array.size()) {
+			tmp = (this.array.size()-h-1)/this.threads;
+			rem = (this.array.size()-h-1)%this.threads;
+		}
+		else {
+			tmp = this.edgesToReadPerThread;
+			rem = 0;
+		}
 		for (int i = 0; i < this.threads; i++) {
-			Edge edge = array.get(atomicH.incrementAndGet());
-			final EdgeLists e = createEdgeListsHigh(edge, graph);
+			final EdgeLists[] e = new EdgeLists[rem+tmp];
+			final int lim = i == 0 ? rem+tmp : tmp;
+			for (int y = 0; y < lim; y++) {
+				Edge edge = array.get(atomicH.incrementAndGet());
+				e[y] = createEdgeListsHigh(edge, graph);
+			}
 			callableArray.add(() -> {
-				findTriangles(e, size);
+				for (int y = 0; y < lim; y++) {
+					findTriangles(e[y], size);
+				}
 				return null;
 			});
 		}
@@ -124,7 +162,7 @@ public class MultiThread {
 		}
 		return atomicH.get();
 	}
-	
+
 	protected double computeThreshold(int h, int l, int p, MutableDouble thresholdP) {
 		double r;
 		if (h != -1)
@@ -166,7 +204,6 @@ public class MultiThread {
 		add.get(v2).add(new Vertex(v1, tmp.getWeight()));
 	}
 
-	
 	protected void findTriangles(EdgeLists e, int size) {
 		if (e == null)
 			return;
@@ -184,16 +221,13 @@ public class MultiThread {
 			Triangle newT = newTriangles.get(i);
 			if (newT == null || (T.size() >= size && newT.getWeight() < peek.getWeight()))
 				break;
-			if (!TSet.contains(newT) && T.size() >= size) {
+			if (!TSet.contains(newT) && T.size() >= size && TSet.add(newT)) {
 				TSet.remove(T.poll());
-				TSet.add(newT);
 				T.add(newT);
-			} else if (!TSet.contains(newT)) {
-				TSet.add(newT);
+			} else if (!TSet.contains(newT) && TSet.add(newT)) {
 				T.add(newT);
 			}
 			i++;
 		}
 	}
 }
-

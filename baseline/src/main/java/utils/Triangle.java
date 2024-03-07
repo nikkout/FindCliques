@@ -1,6 +1,6 @@
 package utils;
 
-public class Triangle {
+public class Triangle{
 	private int vertex1;
 	private int vertex2;
 	private int vertex3;

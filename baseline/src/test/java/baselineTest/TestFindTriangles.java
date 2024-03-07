@@ -11,6 +11,7 @@ import java.util.PriorityQueue;
 
 import org.testng.annotations.Test;
 
+import lombok.extern.slf4j.Slf4j;
 import utils.Edge;
 import utils.EdgeLists;
 import utils.FindTriangles;
@@ -18,6 +19,7 @@ import utils.Graph;
 import utils.ReadGraph;
 import utils.Triangle;
 
+@Slf4j
 public class TestFindTriangles {
 
 	private ArrayList<Triangle> findTrianglesForEdge(double[][] graph, Edge e) {
@@ -40,14 +42,12 @@ public class TestFindTriangles {
 				return lhs.getWeight() > rhs.getWeight() ? -1 : (lhs.getWeight() < rhs.getWeight()) ? 1 : 0;
 			}
 		});
-//		triangles.forEach(triangle -> {
-//			System.out.println(triangle);
-//		});
 		return triangles;
 	}
 
 	@Test
 	public void testFindTriangles100() {
+		log.info("Starting test");
 		FindTriangles ft = new FindTriangles();
 		ReadGraph rg = new ReadGraph(this.getClass().getClassLoader().getResource("email-Eu-core.txt").getFile());
 		rg.readVV();
@@ -66,21 +66,15 @@ public class TestFindTriangles {
 					return lhs.getWeight() > rhs.getWeight() ? -1 : (lhs.getWeight() < rhs.getWeight()) ? 1 : 0;
 				}
 			});
-//			triangles.forEach(triangle -> {
-//				System.out.println(triangle);
-//			});
-//			System.out.println("-----------------------------------------");
-//			triangles2.forEach(triangle -> {
-//				System.out.println(triangle);
-//			});
 			assertTrue(triangles.size() + " is not equal to " + triangles2.size(),
 					triangles.size() == triangles2.size());
 			for (int i = 0; i < triangles.size(); i++) {
 				Triangle t1 = triangles.get(i);
 				Triangle t2 = triangles2.get(i);
-//				System.out.println(triangles.get(i) + " --- " + triangles2.get(i));
 				assertTrue(t1 + " is not equal to " + t2, t1.equals(t2));
 			}
 		}
+		log.info("Ending test");
+		log.info("====================================");
 	}
 }

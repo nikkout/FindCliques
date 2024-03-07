@@ -12,17 +12,19 @@ import java.util.PriorityQueue;
 import org.testng.annotations.Test;
 
 import baseline.Baseline;
+import lombok.extern.slf4j.Slf4j;
 import utils.Graph;
 import utils.ReadGraph;
 import utils.Time;
 import utils.Triangle;
 
+@Slf4j
 public class TestBaseline extends Common {
 
 	@Test
 	public void testBaseline100() {
+		log.info("Starting test");
 		Time time = new Time();
-		System.out.println(this.getClass().getClassLoader().getResource("email-Eu-core.txt").getFile());
 		ReadGraph rg = new ReadGraph(this.getClass().getClassLoader().getResource("email-Eu-core.txt").getFile());
 		rg.readVV();
 		Graph graph = rg.getGraph();
@@ -35,12 +37,14 @@ public class TestBaseline extends Common {
 			Triangle peak = topKT.poll();
 			assertTrue(peak + " is not equal to " + triangles.get(i), peak.equals(triangles.get(i)));
 		}
+		log.info("Ending test");
+		log.info("====================================");
 	}
 
 	@Test
 	public void testBaseline1000() {
+		log.info("Starting test");
 		Time time = new Time();
-		System.out.println(this.getClass().getClassLoader().getResource("email-Eu-core.txt").getFile());
 		ReadGraph rg = new ReadGraph(this.getClass().getClassLoader().getResource("email-Eu-core.txt").getFile());
 		rg.readVV();
 		Graph graph = rg.getGraph();
@@ -53,5 +57,7 @@ public class TestBaseline extends Common {
 			Triangle peak = topKT.poll();
 			assertTrue(peak + " is not equal to " + triangles.get(i), peak.equals(triangles.get(i)));
 		}
+		log.info("Ending test");
+		log.info("====================================");
 	}
 }
