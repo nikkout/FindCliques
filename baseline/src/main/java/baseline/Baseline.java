@@ -7,11 +7,6 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Comparator;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.mutable.MutableDouble;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +14,6 @@ import utils.Edge;
 import utils.EdgeLists;
 import utils.FindTriangles;
 import utils.Graph;
-import utils.ReadGraph;
 import utils.Triangle;
 import utils.Vertex;
 
@@ -34,31 +28,6 @@ public class Baseline {
 	protected HashSet<Triangle> TSet;
 	protected Graph graph;
 	protected int size;
-
-//	public static void main(String[] args) {
-//		Options options = new Options();
-//		options.addOption("a", "algorithm", true, "The algorithm that will be used: baseline|");
-//
-//		DefaultParser parser = new DefaultParser();
-//
-//		try {
-//			CommandLine cl = parser.parse(options, args);
-//			cl.getOptionValue('a');
-//		} catch (ParseException e) {
-//			e.printStackTrace();
-//			new HelpFormatter().printHelp("apache args...", options);
-//		}
-//
-//		Baseline base = new Baseline();
-//		base.execute(args[0]);
-//	}
-//
-//	private void execute(String fname) {
-//		ReadGraph rg = new ReadGraph(fname);
-//		rg.readVVWP();
-//		Graph graph = rg.getGraph();
-//
-//	}
 	
 	public Baseline(Graph graph, int size){
 		array = graph.getArray();

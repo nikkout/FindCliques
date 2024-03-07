@@ -15,6 +15,7 @@ public class Time {
 
 	public PriorityQueue<Triangle> executeAlgorithm(Callable<PriorityQueue<Triangle>> func, String funcName) {
 		double start = System.currentTimeMillis();
+		log.info("Starting execution");
 		PriorityQueue<Triangle> res = null;
 		try {
 			res = func.call();

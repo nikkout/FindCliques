@@ -37,13 +37,15 @@ public class MultiThread {
 	protected HashMap<Integer, ArrayList<Vertex>> L;
 	protected Graph graph;
 	protected int size;
+	private double ar;
 
 	private int edgesToReadPerThread;
 
-	public MultiThread(int threads, Graph graph, int size, int edgesToReadPerThread) {
+	public MultiThread(int threads, Graph graph, int size, int edgesToReadPerThread, double ar) {
 		this.executorService = Executors.newFixedThreadPool(threads);
 		this.threads = threads;
 		this.edgesToReadPerThread = edgesToReadPerThread;
+		this.ar = ar;
 
 		array = graph.getArray();
 		arrayP = graph.getArrayP();
@@ -59,16 +61,17 @@ public class MultiThread {
 				return lhs.getWeight() > rhs.getWeight() ? 1 : (lhs.getWeight() < rhs.getWeight()) ? -1 : 0;
 			}
 		});
+		log.debug("L size: " + L.size());
+		log.debug("array size: " + array.size());
 	}
 
 	public MultiThread(int threads, Graph graph, int size) {
-		this(threads, graph, size, 1);
+		this(threads, graph, size, 1, 1.5);
 	}
 
 	public PriorityBlockingQueue<Triangle> findTrianglesMultiThread() {
 		int l = -1;
 		int h = -1;
-		double ar = 1.5;
 		Triangle currentPeek = null;
 		int currentSize = 0;
 		double threshold = 0;
@@ -76,7 +79,8 @@ public class MultiThread {
 		int p = 1;
 		while (currentPeek == null || currentSize < size
 				|| (currentPeek.getProbability() < thresholdP.getValue() && currentPeek.getWeight() < threshold)) {
-			if (l+1 < this.array.size() && (array.get(l + 1).getWeight() > Math.pow(array.get(h + 1).getWeight(), ar) || l == h)) {
+			if (l + 1 < this.array.size()
+					&& (array.get(l + 1).getWeight() > Math.pow(array.get(h + 1).getWeight(), ar) || l == h)) {
 				l = hsSearch(l);
 			} else {
 				h = lSearch(h);
@@ -84,6 +88,9 @@ public class MultiThread {
 			threshold = this.computeThreshold(h, l, p, thresholdP);
 			currentSize = this.T.size();
 			currentPeek = this.T.peek();
+			log.debug("Threshold: "+ threshold);
+			log.debug("Size: "+ currentSize);
+			log.debug("Peek: "+ currentPeek);
 		}
 		return T;
 	}
@@ -93,17 +100,16 @@ public class MultiThread {
 		final ArrayList<Callable<Object>> callableArray = new ArrayList<>();
 		final int tmp;
 		final int rem;
-		if(l+1+(this.edgesToReadPerThread*this.threads) >= this.array.size()) {
-			tmp = (this.array.size()-l-1)/this.threads;
-			rem = (this.array.size()-l-1)%this.threads;
-		}
-		else {
+		if (l + 1 + (this.edgesToReadPerThread * this.threads) >= this.array.size()) {
+			tmp = (this.array.size() - l - 1) / this.threads;
+			rem = (this.array.size() - l - 1) % this.threads;
+		} else {
 			tmp = this.edgesToReadPerThread;
 			rem = 0;
 		}
 		for (int i = 0; i < this.threads; i++) {
-			final EdgeLists[][] e = new EdgeLists[rem+tmp][];
-			final int lim = i == 0 ? rem+tmp : tmp;
+			final EdgeLists[][] e = new EdgeLists[rem + tmp][];
+			final int lim = i == 0 ? rem + tmp : tmp;
 			for (int y = 0; y < lim; y++) {
 				this.move(L, HS, array, atomicL.get());
 				Edge edge = array.get(atomicL.incrementAndGet());
@@ -132,17 +138,16 @@ public class MultiThread {
 		final ArrayList<Callable<Object>> callableArray = new ArrayList<>();
 		final int tmp;
 		final int rem;
-		if(h+1+(this.edgesToReadPerThread*this.threads) >= this.array.size()) {
-			tmp = (this.array.size()-h-1)/this.threads;
-			rem = (this.array.size()-h-1)%this.threads;
-		}
-		else {
+		if (h + 1 + (this.edgesToReadPerThread * this.threads) >= this.array.size()) {
+			tmp = (this.array.size() - h - 1) / this.threads;
+			rem = (this.array.size() - h - 1) % this.threads;
+		} else {
 			tmp = this.edgesToReadPerThread;
 			rem = 0;
 		}
 		for (int i = 0; i < this.threads; i++) {
-			final EdgeLists[] e = new EdgeLists[rem+tmp];
-			final int lim = i == 0 ? rem+tmp : tmp;
+			final EdgeLists[] e = new EdgeLists[rem + tmp];
+			final int lim = i == 0 ? rem + tmp : tmp;
 			for (int y = 0; y < lim; y++) {
 				Edge edge = array.get(atomicH.incrementAndGet());
 				e[y] = createEdgeListsHigh(edge, graph);

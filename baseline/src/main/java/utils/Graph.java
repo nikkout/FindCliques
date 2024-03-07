@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.Setter;
@@ -21,10 +22,12 @@ public class Graph {
 	private HashMap<Integer, ArrayList<Vertex>> HS;
 	private HashMap<Integer, ArrayList<Vertex>> HSP;
 	private ArrayList<Edge> array;
+	private HashSet<Edge> arrayMap;
 	private ArrayList<Edge> arrayP;
 
 	public Graph() {
 		this.array = new ArrayList<>();
+		this.arrayMap = new HashSet<>();
 		this.L = new HashMap<>();
 		this.LP = new HashMap<>();
 		this.HS = new HashMap<>();

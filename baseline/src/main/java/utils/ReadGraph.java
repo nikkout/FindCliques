@@ -3,8 +3,14 @@ package utils;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
-import java.io.File;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+
+@Slf4j
 public class ReadGraph {
 
 	String fname;
@@ -114,34 +120,45 @@ public class ReadGraph {
 	 * sort the array of the edges based on their weight.
 	 */
 	public void readVVW() {
+		log.debug("start reading graph");
 		int tmp1 = 0;
 		int tmp2 = 0;
 		double tmp3 = 0;
 		try {
-			Scanner scanner = new Scanner(new File(this.fname));
-			while (scanner.hasNextInt()) {
-				// Read a line
-				tmp1 = scanner.nextInt();
-				tmp2 = scanner.nextInt();
-				tmp3 = scanner.nextDouble();
+			BufferedReader br = new BufferedReader(new FileReader(new File(fname)));
+			String st;
+			while ((st = br.readLine()) != null) {
+	            String[] tmp_arr = st.split(" ");
+	            tmp1 = Integer.parseInt(tmp_arr[0]);
+	            tmp2 = Integer.parseInt(tmp_arr[1]);
+	            tmp3 = Integer.parseInt(tmp_arr[2]);
+				Vertex v1 = new Vertex(tmp1, tmp3);
+				Vertex v2 = new Vertex(tmp2, tmp3);
 				if (!graph.getL().containsKey(tmp1)) {
 					graph.getL().put(tmp1, new ArrayList<Vertex>());
 				}
-				if (graph.getL().get(tmp1).contains(new Vertex(tmp2, tmp3)))
-					graph.getL().get(tmp1).add(new Vertex(tmp2, tmp3));
+				if (!graph.getL().get(tmp1).contains(v2)) {
+					graph.getL().get(tmp1).add(v2);
+				}
+
 				if (!graph.getL().containsKey(tmp2)) {
 					graph.getL().put(tmp2, new ArrayList<Vertex>());
 				}
-				if (graph.getL().get(tmp1).contains(new Vertex(tmp1, tmp3)))
-					graph.getL().get(tmp2).add(new Vertex(tmp1, tmp3));
+				if (!graph.getL().get(tmp2).contains(v1)) {
+					graph.getL().get(tmp2).add(v1);
+				}
 				Edge tmp = new Edge(tmp1, tmp2, tmp3);
-				if (!graph.getArray().contains(tmp))
+				if (!graph.getArrayMap().contains(tmp)) {
 					graph.getArray().add(tmp);
+					graph.getArrayMap().add(tmp);
+				}
+					
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		graph.sortArrayWeight();
+		log.debug("finished reading graph");
 	}
 
 	public void readVVWP() {
