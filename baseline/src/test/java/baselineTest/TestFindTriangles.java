@@ -1,4 +1,4 @@
-package baseline;
+package baselineTest;
 
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 
 import utils.Edge;
 import utils.EdgeLists;
+import utils.FindTriangles;
 import utils.Graph;
 import utils.ReadGraph;
 import utils.Triangle;

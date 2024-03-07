@@ -3,6 +3,8 @@ package utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -11,9 +13,29 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Time {
 
-	public PriorityQueue<Triangle> executeAlgorithm(BiFunction<Graph, Integer, PriorityQueue<Triangle>> func, Graph a, int b, String funcName) {
+	public PriorityQueue<Triangle> executeAlgorithm(Callable<PriorityQueue<Triangle>> func, String funcName) {
 		double start = System.currentTimeMillis();
-		PriorityQueue<Triangle> res = func.apply(a, b);
+		PriorityQueue<Triangle> res = null;
+		try {
+			res = func.call();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		double end = System.currentTimeMillis();
+		log.info("The {} required {} miliseconds to execute", funcName, end-start);
+		return res;
+	}
+	
+	public PriorityBlockingQueue<Triangle> executeAlgorithmMultiThread(Callable<PriorityBlockingQueue<Triangle>> func, String funcName) {
+		double start = System.currentTimeMillis();
+		PriorityBlockingQueue<Triangle> res = null;
+		try {
+			res = func.call();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		double end = System.currentTimeMillis();
 		log.info("The {} required {} miliseconds to execute", funcName, end-start);
 		return res;

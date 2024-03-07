@@ -1,12 +1,8 @@
-package baseline;
+package utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
-import utils.EdgeLists;
-import utils.Triangle;
-import utils.Vertex;
 
 public class FindTriangles {
 

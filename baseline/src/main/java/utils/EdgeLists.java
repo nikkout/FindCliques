@@ -1,5 +1,6 @@
 package utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import lombok.Getter;
@@ -7,7 +8,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class EdgeLists {
+public class EdgeLists implements Serializable{
 	@Override
 	public String toString() {
 		return "EdgeLists [edge=" + edge + ", A=" + A + ", B=" + B + "]";

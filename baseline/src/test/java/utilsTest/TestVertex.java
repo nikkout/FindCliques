@@ -1,4 +1,4 @@
-package utils;
+package utilsTest;
 
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -16,6 +16,7 @@ import utils.EdgeLists;
 import utils.Graph;
 import utils.ReadGraph;
 import utils.Triangle;
+import utils.Vertex;
 
 public class TestVertex {
 

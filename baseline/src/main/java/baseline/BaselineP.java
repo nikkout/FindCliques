@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import utils.Edge;
 import utils.EdgeLists;
+import utils.FindTriangles;
 import utils.Graph;
 import utils.Triangle;
 import utils.Vertex;
@@ -17,6 +18,10 @@ public class BaselineP extends Baseline {
 
 	public void setProba(double proba) {
 		this.proba = proba;
+	}
+	
+	public BaselineP(Graph graph, int size){
+		super(graph, size);
 	}
 
 	@Override

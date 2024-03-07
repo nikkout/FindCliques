@@ -8,9 +8,14 @@ import org.apache.commons.lang3.mutable.MutableDouble;
 
 
 import utils.Edge;
+import utils.Graph;
 import utils.Vertex;
 
 public class PruneP extends BaselineP{
+	
+	public PruneP(Graph graph, int size){
+		super(graph, size);
+	}
 	
 	@Override
 	protected double computeThreshold(int h, int l, int p, MutableDouble thresholdP) {

@@ -1,4 +1,4 @@
-package utils;
+package utilsTest;
 
 import static org.testng.AssertJUnit.assertTrue;
 
@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import org.testng.annotations.Test;
-
-import baseline.FindTriangles;
 
 public class TestReadGraph {
 }
