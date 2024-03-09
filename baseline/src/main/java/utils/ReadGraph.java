@@ -137,21 +137,21 @@ public class ReadGraph {
 				if (!graph.getL().containsKey(tmp1)) {
 					graph.getL().put(tmp1, new ArrayList<Vertex>());
 				}
-				if (!graph.getL().get(tmp1).contains(v2)) {
+//				if (!graph.getL().get(tmp1).contains(v2)) {
 					graph.getL().get(tmp1).add(v2);
-				}
+//				}
 
 				if (!graph.getL().containsKey(tmp2)) {
 					graph.getL().put(tmp2, new ArrayList<Vertex>());
 				}
-				if (!graph.getL().get(tmp2).contains(v1)) {
+//				if (!graph.getL().get(tmp2).contains(v1)) {
 					graph.getL().get(tmp2).add(v1);
-				}
+//				}
 				Edge tmp = new Edge(tmp1, tmp2, tmp3);
-				if (!graph.getArrayMap().contains(tmp)) {
+//				if (!graph.getArrayMap().contains(tmp)) {
 					graph.getArray().add(tmp);
-					graph.getArrayMap().add(tmp);
-				}
+//					graph.getArrayMap().add(tmp);
+//				}
 					
 			}
 		} catch (Exception e) {

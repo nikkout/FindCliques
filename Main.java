@@ -140,7 +140,7 @@ public class Main {
                 counter++;
                 // if(counter % 1000000 == 0)System.out.println(counter);
                 // Read a line
-                tmp_arr = st.split("\t");
+                tmp_arr = st.split(" ");
                 tmp1 = Integer.parseInt(tmp_arr[0]);
                 tmp2 = Integer.parseInt(tmp_arr[1]);
                 tmp3 = (int) Double.parseDouble(tmp_arr[2]);
@@ -272,19 +272,17 @@ public class Main {
 
     void move(HashMap<Integer, ArrayList<Tupple>> rm, HashMap<Integer, ArrayList<Tupple>> add, ArrayList<Edge> array,
             int l) {
-        Edge tmp = array.get(l + 1);
-        rm.get(tmp.vertex1).remove(new Tupple(tmp.vertex2, 0));
-        rm.get(tmp.vertex2).remove(new Tupple(tmp.vertex1, 0));
-        if (rm.get(tmp.vertex1).size() == 0)
-            rm.remove(tmp.vertex1);
-        if (rm.get(tmp.vertex2).size() == 0)
-            rm.remove(tmp.vertex2);
-        if (!add.containsKey(tmp.vertex1))
-            add.put(tmp.vertex1, new ArrayList<Tupple>());
-        add.get(tmp.vertex1).add(new Tupple(tmp.vertex2, tmp.weight));
-        if (!add.containsKey(tmp.vertex2))
-            add.put(tmp.vertex2, new ArrayList<Tupple>());
-        add.get(tmp.vertex2).add(new Tupple(tmp.vertex1, tmp.weight));
+	    Edge tmp = array.get(l + 1);
+		int v1 = tmp.vertex1;
+		int v2 = tmp.vertex2;
+		rm.get(v1).remove(rm.get(v1).indexOf(new Tupple(v2, 0)));
+		rm.get(v2).remove(rm.get(v2).indexOf(new Tupple(v1, 0)));
+		if (!add.containsKey(v1))
+			add.put(v1, new ArrayList<Tupple>());
+		add.get(v1).add(new Tupple(v2, tmp.weight));
+		if (!add.containsKey(v2))
+			add.put(v2, new ArrayList<Tupple>());
+		add.get(v2).add(new Tupple(v1, tmp.weight));
     }
 
     void add(HashMap<Integer, ArrayList<Tupple>> add, ArrayList<Edge> array, int l) {

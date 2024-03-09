@@ -355,7 +355,7 @@ public class TestMultiThread extends Common {
 		rg.readVV();
 		Graph graph = rg.getGraph();
 		graph.toFileW(new File("email-Eu-coreW.txt"));
-		MultiThread mt = new MultiThread(4, graph, TESTALL, 1000, 1.5);
+		MultiThread mt = new MultiThread(4, graph, TESTALL, 10000, 1.5);
 		ArrayList<Triangle> triangles = time.executeBruteForce(this::fullEnum, graph.getAdjacencyMatrixW(),
 				"Brute Force");
 		PriorityBlockingQueue<Triangle> topKT = time.executeAlgorithmMultiThread(mt::findTrianglesMultiThread,

@@ -1,6 +1,7 @@
 package multiThread;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -92,6 +93,17 @@ public class MultiThread {
 			log.debug("Size: "+ currentSize);
 			log.debug("Peek: "+ currentPeek);
 		}
+		Triangle[] tmparr = new Triangle[T.size()];
+		T.toArray(tmparr);
+		Arrays.sort(tmparr, new Comparator<Triangle>() {
+            @Override
+            public int compare(Triangle lhs, Triangle rhs) {
+                return lhs.getWeight() > rhs.getWeight() ? -1 : (lhs.getWeight() < rhs.getWeight()) ? 1 : 0;
+                }
+            });
+		for(int i=0;i<20;i++) {
+			log.debug(tmparr[i]+"");
+		}
 		return T;
 	}
 
@@ -108,19 +120,15 @@ public class MultiThread {
 			rem = 0;
 		}
 		for (int i = 0; i < this.threads; i++) {
-			final EdgeLists[][] e = new EdgeLists[rem + tmp][];
+			ArrayList<EdgeLists> e = new ArrayList<>();
 			final int lim = i == 0 ? rem + tmp : tmp;
 			for (int y = 0; y < lim; y++) {
 				this.move(L, HS, array, atomicL.get());
 				Edge edge = array.get(atomicL.incrementAndGet());
-				e[y] = createEdgeListsLow(edge, graph);
+				e.addAll(Arrays.asList(createEdgeListsLow(edge, graph)));
 			}
 			callableArray.add(() -> {
-				for (int y = 0; y < lim; y++) {
-					findTriangles(e[y][0], size);
-					findTriangles(e[y][1], size);
-					findTriangles(e[y][2], size);
-				}
+				findTriangles(e, size);
 				return null;
 			});
 		}
@@ -146,23 +154,20 @@ public class MultiThread {
 			rem = 0;
 		}
 		for (int i = 0; i < this.threads; i++) {
-			final EdgeLists[] e = new EdgeLists[rem + tmp];
+			ArrayList<EdgeLists> e = new ArrayList<>();
 			final int lim = i == 0 ? rem + tmp : tmp;
 			for (int y = 0; y < lim; y++) {
 				Edge edge = array.get(atomicH.incrementAndGet());
-				e[y] = createEdgeListsHigh(edge, graph);
+				e.addAll(Arrays.asList(createEdgeListsHigh(edge, graph)));
 			}
 			callableArray.add(() -> {
-				for (int y = 0; y < lim; y++) {
-					findTriangles(e[y], size);
-				}
+				findTriangles(e, size);
 				return null;
 			});
 		}
 		try {
 			this.executorService.invokeAll(callableArray);
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		return atomicH.get();
@@ -209,27 +214,21 @@ public class MultiThread {
 		add.get(v2).add(new Vertex(v1, tmp.getWeight()));
 	}
 
-	protected void findTriangles(EdgeLists e, int size) {
+	protected void findTriangles(ArrayList<EdgeLists> e, int size) {
 		if (e == null)
 			return;
 		FindTriangles ft = new FindTriangles();
-		ArrayList<Triangle> newTriangles = ft.findTriangles(e);
-		Collections.sort(newTriangles, new Comparator<Triangle>() {
-			@Override
-			public int compare(Triangle lhs, Triangle rhs) {
-				return lhs.getWeight() > rhs.getWeight() ? -1 : (lhs.getWeight() < rhs.getWeight()) ? 1 : 0;
-			}
-		});
+		Triangle[] newTriangles = ft.findTriangles(e, this.T.size() >= size ? this.T.peek().getWeight() : 0);
 		int i = 0;
-		while (newTriangles.size() > i) {
+		while (newTriangles.length > i) {
 			Triangle peek = T.peek();
-			Triangle newT = newTriangles.get(i);
+			Triangle newT = newTriangles[i];
 			if (newT == null || (T.size() >= size && newT.getWeight() < peek.getWeight()))
 				break;
-			if (!TSet.contains(newT) && T.size() >= size && TSet.add(newT)) {
+			if (T.size() >= size && TSet.add(newT)) {
 				TSet.remove(T.poll());
 				T.add(newT);
-			} else if (!TSet.contains(newT) && TSet.add(newT)) {
+			} else if (TSet.add(newT)) {
 				T.add(newT);
 			}
 			i++;

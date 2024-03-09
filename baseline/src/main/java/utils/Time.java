@@ -12,6 +12,18 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Time {
+	
+	
+	
+	private static long millisStart;
+
+	public static void start() {
+		millisStart = System.currentTimeMillis();
+	}
+	
+	public static long end() {
+		return System.currentTimeMillis() - millisStart;
+	}
 
 	public PriorityQueue<Triangle> executeAlgorithm(Callable<PriorityQueue<Triangle>> func, String funcName) {
 		double start = System.currentTimeMillis();

@@ -59,7 +59,7 @@ public class TestFindTriangles {
 			if (triangles.size() == 0)
 				continue;
 			EdgeLists e = new EdgeLists(edge, graph.getL().get(edge.getVertex1()), graph.getL().get(edge.getVertex2()));
-			ArrayList<Triangle> triangles2 = ft.findTriangles(e);
+			ArrayList<Triangle> triangles2 = ft.findTriangles(e, 0);
 			Collections.sort(triangles2, new Comparator<Triangle>() {
 				@Override
 				public int compare(Triangle lhs, Triangle rhs) {

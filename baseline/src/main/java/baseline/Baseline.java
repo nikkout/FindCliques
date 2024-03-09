@@ -137,7 +137,7 @@ public class Baseline {
 		if (e == null)
 			return;
 		FindTriangles ft = new FindTriangles();
-		ArrayList<Triangle> newTriangles = ft.findTriangles(e);
+		ArrayList<Triangle> newTriangles = ft.findTriangles(e, this.T.peek() != null ? this.T.peek().getWeight() : 0);
 		Collections.sort(newTriangles, new Comparator<Triangle>() {
 			@Override
 			public int compare(Triangle lhs, Triangle rhs) {
