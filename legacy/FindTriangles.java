@@ -1,3 +1,5 @@
+package legacy;
+
 import java.util.Scanner;
 import java.io.File;
 import java.util.HashMap;
@@ -50,27 +52,6 @@ class FindTriangles implements Runnable{
 	double min = 100000;
         for(int i=this.parameters.start;i<this.parameters.end;i++){
             Edge current = parameters.e[i];
-	    /*if(!this.parameters.L.containsKey(current.vertex1))continue;
-	    ArrayList<Tupple> v1 = this.parameters.L.get(current.vertex1);
-	    for(int y=0;y<v1.size();y++){
-	        Tupple c = v1.get(y);
-		if(c.weight <= current.weight && current.vertex2 != c.vertex && this.parameters.L.containsKey(c.vertex)){
-		    ArrayList<Tupple> v2 = this.parameters.L.get(c.vertex);
-		    Tupple tmp = new Tupple(current.vertex2, 0);
-		    if(v2.contains(tmp)){
-		        //find Triangle
-		        Triangle tr = new Triangle(current.vertex1, current.vertex2, c.vertex, current.weight+c.weight+v2.get(v2.indexOf(tmp)).weight);
-			Tl.add(tr);
-                    	/*if(Tl.size()< this.parameters.Size){
-                             Tl.add(tr);
-                             if(min > tr.weight) min = tr.weight;
-                    	}
-                        else if(min < tr.weight){
-                             Tl.add(tr);
-                        }
-                    }
-		}
-	    }*/
 	    if(this.parameters.mode ==0 && this.parameters.HS.containsKey(current.vertex1) && this.parameters.HS.containsKey(current.vertex2)){
 	        ArrayList<Tupple> v1 = new ArrayList<Tupple>(this.parameters.HS.get(current.vertex1));
 		ArrayList<Tupple> v2 = new ArrayList<Tupple>(this.parameters.HS.get(current.vertex2));
@@ -209,14 +190,12 @@ class FindTriangles implements Runnable{
                 }
             });
         for(int i=0;i<this.triangle_array.length;i++){
-            if(this.parameters.T.size() < this.parameters.Size && !this.parameters.TSet.contains(this.triangle_array[i])){
+            if(this.parameters.T.size() < this.parameters.Size && this.parameters.TSet.add(this.triangle_array[i])){
 		this.parameters.T.put(this.triangle_array[i]);
-		this.parameters.TSet.add(this.triangle_array[i]);
 	    }
-            else if(this.parameters.T.peek().weight < this.triangle_array[i].weight && !this.parameters.TSet.contains(this.triangle_array[i])){
-	        this.parameters.TSet.remove(this.parameters.T.poll());
+            else if(this.parameters.T.peek().weight < this.triangle_array[i].weight && this.parameters.TSet.add(this.triangle_array[i])){
+            this.parameters.TSet.remove(this.parameters.T.poll());
 		this.parameters.T.put(this.triangle_array[i]);
-		this.parameters.TSet.add(this.triangle_array[i]);
             }
             else if(this.parameters.T.peek().weight >= this.triangle_array[i].weight && this.parameters.T.size() >= this.parameters.Size) break;
 	}

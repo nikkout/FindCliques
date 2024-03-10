@@ -19,7 +19,9 @@ public class Api {
 		int threads;
 		int triangles;
 		int edges;
+		int hEdges;
 		double ar;
+		int arraySize;
 		Options options = new Options();
 		options.addOption("a", "algorithm", true, "The algorithm that will be used: multiThread|");
 		options.addOption("g", "graph", true, "The graph file containing the graph");
@@ -27,7 +29,9 @@ public class Api {
 		options.addOption("t", "threads", true, "The number of threads the multiThread algorithm will use");
 		options.addOption("k", "triangles", true, "Topk heaviest triangles to compute");
 		options.addOption("e", "edges", true, "Number of Edges each thread should read");
-		options.addOption("", "ar", true, "AR variable, based on the graph's weights distribution. Default ");
+		options.addOption("he", "heavyEdges", true, "Number of Heavy Edges each thread should read");
+		options.addOption("ar", "AR", true, "AR variable, based on the graph's weights distribution. Default ");
+		options.addOption("as", "arraySize", true, "The number of edges the graph has(Optional)");
 
 		DefaultParser parser = new DefaultParser();
 
@@ -39,17 +43,21 @@ public class Api {
 			threads = Integer.parseInt(cl.getOptionValue('t'));
 			triangles = Integer.parseInt(cl.getOptionValue('k'));
 			edges = Integer.parseInt(cl.getOptionValue('e'));
+			hEdges = Integer.parseInt(cl.getOptionValue("he"));
 			ar = cl.getOptionValue("ar") != null ? Double.parseDouble(cl.getOptionValue("ar")) : 1.5;
+			arraySize = cl.getOptionValue("as") != null ? Integer.parseInt(cl.getOptionValue("as")) : 0;
 			log.info("Algorithm: " + algorithm);
 			log.info("Graph File: " + graphFile);
 			log.info("Format: " + format);
 			log.info("Threads: " + threads);
 			log.info("Triangles: " + triangles);
 			log.info("Edges: " + edges);
+			log.info("Heavy Edges: " + hEdges);
 			log.info("AR: " + ar);
+			log.info("arraySize: " + arraySize);
 
-			Graph graph = Read.readGraph(graphFile, format);
-			Execute.execute(algorithm, threads, triangles, graph, edges, ar);
+			Graph graph = Read.readGraph(graphFile, format, arraySize);
+			Execute.execute(algorithm, threads, triangles, graph, edges, hEdges, ar);
 
 		} catch (ParseException e) {
 			e.printStackTrace();

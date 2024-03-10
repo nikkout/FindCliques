@@ -51,18 +51,14 @@ public class Vertex {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(probability, vertex, weight);
+		return Objects.hash(vertex);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Vertex other = (Vertex) obj;
-		return vertex == other.vertex;
+		if (!(obj instanceof Vertex)) {
+            return false;
+        }
+        return this.vertex == ((Vertex) obj).vertex; 
 	}
 }

@@ -1,3 +1,5 @@
+package legacy;
+
 class Clique5Value{
 	Clique4 clique4;
 	int vertex;

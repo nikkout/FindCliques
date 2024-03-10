@@ -1,8 +1,12 @@
-class Triangle implements Weighted{
-    int vertex1;
-    int vertex2;
-    int vertex3;
-    double weight;
+package legacy;
+
+import java.util.Objects;
+
+public class Triangle implements Weighted{
+    public int vertex1;
+    public int vertex2;
+    public int vertex3;
+    public double weight;
 
     @Override
     public double get_weight(){
@@ -55,9 +59,10 @@ class Triangle implements Weighted{
         return false; 
     }
     
-    public int hashCode() {
-        return this.vertex1*100+vertex2*10+vertex3;
-    }
+    @Override
+	public int hashCode() {
+		return Objects.hash(vertex1, vertex2, vertex3);
+	}
 
     public String toString(){
     	return this.vertex1+" "+this.vertex2+" "+this.vertex3 + "  | size: "+this.weight;

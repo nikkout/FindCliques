@@ -25,13 +25,20 @@ public class Graph {
 	private HashSet<Edge> arrayMap;
 	private ArrayList<Edge> arrayP;
 
-	public Graph() {
-		this.array = new ArrayList<>();
+	public Graph(int arraySize) {
+		if (arraySize == 0)
+			this.array = new ArrayList<>();
+		else
+			this.array = new ArrayList<>(arraySize);
 		this.arrayMap = new HashSet<>();
 		this.L = new HashMap<>();
 		this.LP = new HashMap<>();
 		this.HS = new HashMap<>();
 		this.HSP = new HashMap<>();
+	}
+
+	public Graph() {
+		this(0);
 	}
 
 	public void sortArrayWeight() {
@@ -43,17 +50,18 @@ public class Graph {
 			}
 		});
 	}
-	
+
 	public void sortArrayProbability() {
 		this.arrayP = new ArrayList<Edge>();
-		this.array.forEach(edge ->{
+		this.array.forEach(edge -> {
 			this.arrayP.add(edge);
 		});
 		Collections.sort(this.arrayP, new Comparator<Edge>() {
 			@Override
 			public int compare(Edge lhs, Edge rhs) {
 				// -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
-				return lhs.getProbability() > rhs.getProbability() ? -1 : (lhs.getProbability() < rhs.getProbability()) ? 1 : 0;
+				return lhs.getProbability() > rhs.getProbability() ? -1
+						: (lhs.getProbability() < rhs.getProbability()) ? 1 : 0;
 			}
 		});
 	}
@@ -127,7 +135,7 @@ public class Graph {
 		});
 		return matrix;
 	}
-	
+
 	public double[][] getAdjacencyMatrixP() {
 		int V = findMaxVertex() + 1;
 		double[][] matrix = new double[V][V];

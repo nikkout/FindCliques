@@ -143,7 +143,7 @@ public class TestMultiThread extends Common {
 		rg.readVV();
 		Graph graph = rg.getGraph();
 		graph.toFileW(new File("email-Eu-coreW.txt"));
-		MultiThread mt = new MultiThread(4, graph, TEST100, 100, 1.5);
+		MultiThread mt = new MultiThread(4, graph, TEST100, 100, 50, 1.5);
 		ArrayList<Triangle> triangles = time.executeBruteForce(this::fullEnum, graph.getAdjacencyMatrixW(),
 				"Brute Force");
 		PriorityBlockingQueue<Triangle> topKT = time.executeAlgorithmMultiThread(mt::findTrianglesMultiThread,
@@ -187,7 +187,7 @@ public class TestMultiThread extends Common {
 		rg.readVV();
 		Graph graph = rg.getGraph();
 		graph.toFileW(new File("email-Eu-coreW.txt"));
-		MultiThread mt = new MultiThread(4, graph, TEST100, 1000, 1.5);
+		MultiThread mt = new MultiThread(4, graph, TEST100, 1000, 500, 1.5);
 		ArrayList<Triangle> triangles = time.executeBruteForce(this::fullEnum, graph.getAdjacencyMatrixW(),
 				"Brute Force");
 		PriorityBlockingQueue<Triangle> topKT = time.executeAlgorithmMultiThread(mt::findTrianglesMultiThread,
@@ -231,7 +231,7 @@ public class TestMultiThread extends Common {
 		rg.readVV();
 		Graph graph = rg.getGraph();
 		graph.toFileW(new File("email-Eu-coreW.txt"));
-		MultiThread mt = new MultiThread(4, graph, TEST1000, 100, 1.5);
+		MultiThread mt = new MultiThread(4, graph, TEST1000, 100, 50, 1.5);
 		ArrayList<Triangle> triangles = time.executeBruteForce(this::fullEnum, graph.getAdjacencyMatrixW(),
 				"Brute Force");
 		PriorityBlockingQueue<Triangle> topKT = time.executeAlgorithmMultiThread(mt::findTrianglesMultiThread,
@@ -275,7 +275,7 @@ public class TestMultiThread extends Common {
 		rg.readVV();
 		Graph graph = rg.getGraph();
 		graph.toFileW(new File("email-Eu-coreW.txt"));
-		MultiThread mt = new MultiThread(4, graph, TEST1000, 1000, 1.5);
+		MultiThread mt = new MultiThread(4, graph, TEST1000, 1000, 500, 1.5);
 		ArrayList<Triangle> triangles = time.executeBruteForce(this::fullEnum, graph.getAdjacencyMatrixW(),
 				"Brute Force");
 		PriorityBlockingQueue<Triangle> topKT = time.executeAlgorithmMultiThread(mt::findTrianglesMultiThread,
@@ -321,7 +321,7 @@ public class TestMultiThread extends Common {
 		rg.readVV();
 		Graph graph = rg.getGraph();
 		graph.toFileW(new File("email-Eu-coreW.txt"));
-		MultiThread mt = new MultiThread(4, graph, TESTALL, 100, 1.5);
+		MultiThread mt = new MultiThread(4, graph, TESTALL, 100, 50, 1.5);
 		ArrayList<Triangle> triangles = time.executeBruteForce(this::fullEnum, graph.getAdjacencyMatrixW(),
 				"Brute Force");
 		PriorityBlockingQueue<Triangle> topKT = time.executeAlgorithmMultiThread(mt::findTrianglesMultiThread,
@@ -355,7 +355,7 @@ public class TestMultiThread extends Common {
 		rg.readVV();
 		Graph graph = rg.getGraph();
 		graph.toFileW(new File("email-Eu-coreW.txt"));
-		MultiThread mt = new MultiThread(4, graph, TESTALL, 10000, 1.5);
+		MultiThread mt = new MultiThread(4, graph, TESTALL, 10000, 500, 1.5);
 		ArrayList<Triangle> triangles = time.executeBruteForce(this::fullEnum, graph.getAdjacencyMatrixW(),
 				"Brute Force");
 		PriorityBlockingQueue<Triangle> topKT = time.executeAlgorithmMultiThread(mt::findTrianglesMultiThread,
@@ -390,7 +390,7 @@ public class TestMultiThread extends Common {
 		rg.readVV();
 		Graph graph = rg.getGraph();
 		graph.toFileW(new File("email-Eu-coreW.txt"));
-		MultiThread mt = new MultiThread(6, graph, TESTALL, 100, 1.5);
+		MultiThread mt = new MultiThread(6, graph, TESTALL, 100, 50, 1.5);
 		ArrayList<Triangle> triangles = time.executeBruteForce(this::fullEnum, graph.getAdjacencyMatrixW(),
 				"Brute Force");
 		PriorityBlockingQueue<Triangle> topKT = time.executeAlgorithmMultiThread(mt::findTrianglesMultiThread,

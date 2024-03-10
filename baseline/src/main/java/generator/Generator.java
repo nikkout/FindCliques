@@ -19,7 +19,7 @@ public class Generator {
 		} else if (args[1].equals("p")) {
 			
 		} else if (args[1].equals("wp")) {
-			ReadGraph rg = new ReadGraph(args[2]);
+			ReadGraph rg = new ReadGraph(args[2], 0);
 			rg.readVVW();
 			GenerateGraph gg = new GenerateGraph();
 			gg.generateGraphWP(rg.getGraph(), args[2]+"_gen");

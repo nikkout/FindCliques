@@ -1,3 +1,5 @@
+package legacy;
+
 class Edge{
     int vertex1;
     int vertex2;

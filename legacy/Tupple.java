@@ -1,3 +1,5 @@
+package legacy;
+
 class Tupple{
     int vertex;
     double weight;

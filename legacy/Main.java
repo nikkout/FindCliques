@@ -1,3 +1,5 @@
+package legacy;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +22,7 @@ public class Main {
     HashMap<Integer, ArrayList<Tupple>> HS;
     HashMap<Integer, ArrayList<Tupple>> S;
     ArrayList<Edge> array;
-    PriorityBlockingQueue<Triangle> T;
+    public PriorityBlockingQueue<Triangle> T;
     Set<Triangle> TSet;
     PriorityBlockingQueue<Clique4> C4;
     Set<Clique4> C4Set;
@@ -80,7 +82,7 @@ public class Main {
         System.out.println("Total time in millis: " + (System.currentTimeMillis() - t1));
     }
 
-    Main(String Args[]) {
+    public Main(String Args[]) {
         this.tnum = Integer.parseInt(Args[0]);
         this.threads = Integer.parseInt(Args[1]);
         this.Size = Integer.parseInt(Args[2]) + 1;
@@ -123,7 +125,7 @@ public class Main {
         this.Clique_5 = Collections.synchronizedMap(new HashMap<Triangle, List<Clique5Value>>());
     }
 
-    void read(String fname) {
+    public void read(String fname) {
         int tmp1 = 0, tmp2 = 0;
         double tmp3 = 0;
         int counter = 0;
@@ -143,7 +145,7 @@ public class Main {
                 tmp_arr = st.split(" ");
                 tmp1 = Integer.parseInt(tmp_arr[0]);
                 tmp2 = Integer.parseInt(tmp_arr[1]);
-                tmp3 = (int) Double.parseDouble(tmp_arr[2]);
+                tmp3 = Double.parseDouble(tmp_arr[2]);
                 if (!this.L.containsKey(tmp1)) {
                     this.L.put(tmp1, new ArrayList<Tupple>());
                 }
@@ -184,12 +186,13 @@ public class Main {
         Weighted currentPeek = null;
         int currentSize = 0;
         while (currentPeek == null || currentPeek.get_weight() < threshold || currentSize < this.Size) {// l<array.size()-1){
-            if (Math.pow(array.get(l + 1).weight, ar) > array.get(h + 1).weight || l <= h) {
+//        System.out.println(l+"");
+ //               System.out.println(h+"");
+            if (l + 1 < this.array.size() && (Math.pow(array.get(l + 1).weight, ar) > array.get(h + 1).weight || l <= h)) {
                 limit = tnum;
                 if (array.size() - l <= tnum)
                     limit = array.size() - l - 1;
                 ArrayList<Edge> e1 = new ArrayList<Edge>();
-                ArrayList<Edge> e2 = new ArrayList<Edge>();
                 for (int i = 0; i < limit; i++) {
                     e1.add(array.get(l + 1));
                     move(L, HS, array, l);
@@ -214,8 +217,8 @@ public class Main {
                 r3 = Math.pow((double) (array.get(h).weight), p) + 2 * Math.pow((float) (array.get(l).weight), p);
             else
                 r3 = Math.pow((double) (array.get(0).weight), p) + 2 * Math.pow((float) (array.get(l).weight), p);
-            r4 = 3 * (array.get(h + 1).weight) + 3 * array.get(l).weight;
-            r5 = 6 * (array.get(h + 1).weight) + 4 * array.get(l).weight;
+            //r4 = 3 * (array.get(h + 1).weight) + 3 * array.get(l).weight;
+            //r5 = 6 * (array.get(h + 1).weight) + 4 * array.get(l).weight;
             // if(!this.Clique_4.containsKey(array.get(l-limit+1)))d = 2*r;
             // else {
             // List<Clique4Value> c4vs = (List)this.Clique_4.get(array.get(h+1));
@@ -283,25 +286,6 @@ public class Main {
 		if (!add.containsKey(v2))
 			add.put(v2, new ArrayList<Tupple>());
 		add.get(v2).add(new Tupple(v1, tmp.weight));
-    }
-
-    void add(HashMap<Integer, ArrayList<Tupple>> add, ArrayList<Edge> array, int l) {
-        Edge tmp = array.get(l + 1);
-        if (!add.containsKey(tmp.vertex1))
-            add.put(tmp.vertex1, new ArrayList<Tupple>());
-        add.get(tmp.vertex1).add(new Tupple(tmp.vertex2, tmp.weight));
-        if (!add.containsKey(tmp.vertex2))
-            add.put(tmp.vertex2, new ArrayList<Tupple>());
-        add.get(tmp.vertex2).add(new Tupple(tmp.vertex1, tmp.weight));
-    }
-
-    void remove(HashMap<Integer, ArrayList<Tupple>> rm, ArrayList<Edge> array, int l, int size) {
-        for (int i = 1; i <= size; i++) {
-            Edge tmp = array.get(l + i);
-            rm.get(tmp.vertex1).remove(new Tupple(tmp.vertex2, 0));
-            if (rm.get(tmp.vertex1).size() == 0)
-                rm.remove(tmp.vertex1);
-        }
     }
 
     void findTriangles(ArrayList<Edge> e, int threads, int Size, int mode) {

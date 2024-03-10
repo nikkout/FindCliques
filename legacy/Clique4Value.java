@@ -1,3 +1,5 @@
+package legacy;
+
 class Clique4Value{
 	Triangle triangle;
 	int vertex;

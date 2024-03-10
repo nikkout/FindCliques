@@ -40,41 +40,47 @@ public class FindTriangles {
 		}
 		return triangles;
 	}
-	
+
 	public Triangle[] findTriangles(ArrayList<EdgeLists> edgeLists, double w) {
 		HashSet<Triangle> triangles = new HashSet<>();
-		edgeLists.forEach(e -> {
+		for (int y = 0; y < edgeLists.size(); y++) {
+			EdgeLists e = edgeLists.get(y);
 			ArrayList<Vertex> A = new ArrayList<Vertex>(e.getA());
 			ArrayList<Vertex> B = new ArrayList<Vertex>(e.getB());
+			if (A.size() == 0 || B.size() == 0)
+				continue;
 			if (A.size() < B.size()) {
 				A.retainAll(B);
-				A.forEach(vertex -> {
+				for (int i = 0; i < A.size(); i++) {
+					Vertex vertex = A.get(i);
 					double weight = e.getEdge().getWeight() + vertex.getWeight() + B.get(B.indexOf(vertex)).getWeight();
 					Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), vertex.getVertex(),
 							weight);
-					if (tr.getWeight() > w)
-						triangles.add(tr);
-				});
+//					if (tr.getWeight() > w)
+					triangles.add(tr);
+				}
+
 			} else {
 				B.retainAll(A);
-				B.forEach(vertex -> {
+				for (int i = 0; i < B.size(); i++) {
+					Vertex vertex = B.get(i);
 					double weight = e.getEdge().getWeight() + vertex.getWeight() + A.get(A.indexOf(vertex)).getWeight();
 					Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), vertex.getVertex(),
 							weight);
-					if (tr.getWeight() > w)
-						triangles.add(tr);
-				});
+//					if (tr.getWeight() > w)
+					triangles.add(tr);
+				}
 			}
-		});
-		
+		}
+
 		Triangle[] triangleArray = new Triangle[triangles.size()];
 		triangleArray = triangles.toArray(triangleArray);
-        Arrays.sort(triangleArray, new Comparator<Triangle>() {
-            @Override
-            public int compare(Triangle lhs, Triangle rhs) {
-                return lhs.getWeight() > rhs.getWeight() ? -1 : (lhs.getWeight() < rhs.getWeight()) ? 1 : 0;
-                }
-            });
+		Arrays.sort(triangleArray, new Comparator<Triangle>() {
+			@Override
+			public int compare(Triangle lhs, Triangle rhs) {
+				return lhs.getWeight() > rhs.getWeight() ? -1 : (lhs.getWeight() < rhs.getWeight()) ? 1 : 0;
+			}
+		});
 		return triangleArray;
 	}
 

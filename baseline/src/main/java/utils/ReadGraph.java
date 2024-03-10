@@ -15,10 +15,15 @@ public class ReadGraph {
 
 	String fname;
 	Graph graph;
-
+	
 	public ReadGraph(String fname) {
+		this(fname, 0);
+
+	}
+
+	public ReadGraph(String fname, int arraySize) {
 		this.fname = fname;
-		graph = new Graph();
+		graph = new Graph(arraySize);
 
 	}
 
@@ -131,7 +136,7 @@ public class ReadGraph {
 	            String[] tmp_arr = st.split(" ");
 	            tmp1 = Integer.parseInt(tmp_arr[0]);
 	            tmp2 = Integer.parseInt(tmp_arr[1]);
-	            tmp3 = Integer.parseInt(tmp_arr[2]);
+	            tmp3 = Double.parseDouble(tmp_arr[2]);
 				Vertex v1 = new Vertex(tmp1, tmp3);
 				Vertex v2 = new Vertex(tmp2, tmp3);
 				if (!graph.getL().containsKey(tmp1)) {
