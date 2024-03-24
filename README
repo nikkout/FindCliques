@@ -1,0 +1,4 @@
+## Reproduction of results
+
+In order to reproduce the results you can use the scripts existing in the test folder. Those scripts require a jar containing the code of the repository exists in the same folder along with the files containing the graphs. The files containing the graphs can be found here: https://drive.google.com/file/d/19fUU4F-jCrN1M4s1HfYiq1VKXfkJgt7a/view?usp=drive_link
+In the test folder a demo.jar file exists containing the compiled code of this repository and it can be used for the tests.
