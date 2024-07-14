@@ -5,11 +5,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class FindTriangles {
 
 	/**
@@ -17,22 +15,23 @@ public class FindTriangles {
 	 */
 	public ArrayList<Triangle> findTriangles(EdgeLists e, double w) {
 		ArrayList<Triangle> triangles = new ArrayList<>();
-		ArrayList<Vertex> A = new ArrayList<Vertex>(e.getA());
-		ArrayList<Vertex> B = new ArrayList<Vertex>(e.getB());
+		HashMap<Integer, Double> A = new HashMap<Integer, Double>(e.getA());
+		HashMap<Integer, Double> B = new HashMap<Integer, Double>(e.getB());
 		if (A.size() < B.size()) {
-			A.retainAll(B);
-			A.forEach(vertex -> {
-				double weight = e.getEdge().getWeight() + vertex.getWeight() + B.get(B.indexOf(vertex)).getWeight();
-				Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), vertex.getVertex(),
+			A.keySet().retainAll(B.keySet());
+			A.keySet().forEach(key -> {
+				double weight = e.getEdge().getWeight() + A.get(key) + B.get(key);
+				Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), key,
 						weight);
 				if (tr.getWeight() > w)
 					triangles.add(tr);
 			});
+
 		} else {
-			B.retainAll(A);
-			B.forEach(vertex -> {
-				double weight = e.getEdge().getWeight() + vertex.getWeight() + A.get(A.indexOf(vertex)).getWeight();
-				Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), vertex.getVertex(),
+			B.keySet().retainAll(A.keySet());
+			B.keySet().forEach(key -> {
+				double weight = e.getEdge().getWeight() + B.get(key) + A.get(key);
+				Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), key,
 						weight);
 				if (tr.getWeight() > w)
 					triangles.add(tr);
@@ -45,31 +44,33 @@ public class FindTriangles {
 		HashSet<Triangle> triangles = new HashSet<>();
 		for (int y = 0; y < edgeLists.size(); y++) {
 			EdgeLists e = edgeLists.get(y);
-			ArrayList<Vertex> A = new ArrayList<Vertex>(e.getA());
-			ArrayList<Vertex> B = new ArrayList<Vertex>(e.getB());
+			HashMap<Integer, Double> A = e.getA();
+			HashMap<Integer, Double> B = e.getB();
 			if (A.size() == 0 || B.size() == 0)
 				continue;
 			if (A.size() < B.size()) {
-				A.retainAll(B);
-				for (int i = 0; i < A.size(); i++) {
-					Vertex vertex = A.get(i);
-					double weight = e.getEdge().getWeight() + vertex.getWeight() + B.get(B.indexOf(vertex)).getWeight();
-					Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), vertex.getVertex(),
+				Set<Integer> tmp = A.keySet().stream().filter(key -> {
+					return B.containsKey(key);
+				}).collect(Collectors.toSet());
+				tmp.forEach(key -> {
+					double weight = e.getEdge().getWeight() + A.get(key) + B.get(key);
+					Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), key,
 							weight);
-//					if (tr.getWeight() > w)
-					triangles.add(tr);
-				}
+					if (tr.getWeight() > w)
+						triangles.add(tr);
+				});
 
 			} else {
-				B.retainAll(A);
-				for (int i = 0; i < B.size(); i++) {
-					Vertex vertex = B.get(i);
-					double weight = e.getEdge().getWeight() + vertex.getWeight() + A.get(A.indexOf(vertex)).getWeight();
-					Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), vertex.getVertex(),
+				Set<Integer> tmp = B.keySet().stream().filter(key -> {
+					return A.containsKey(key);
+				}).collect(Collectors.toSet());
+				tmp.forEach(key -> {
+					double weight = e.getEdge().getWeight() + B.get(key) + A.get(key);
+					Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), key,
 							weight);
-//					if (tr.getWeight() > w)
-					triangles.add(tr);
-				}
+					if (tr.getWeight() > w)
+						triangles.add(tr);
+				});
 			}
 		}
 
@@ -86,18 +87,38 @@ public class FindTriangles {
 
 	public ArrayList<Triangle> findTrianglesP(EdgeLists e) {
 		ArrayList<Triangle> triangles = new ArrayList<>();
-		ArrayList<Vertex> A = e.getA();
-		ArrayList<Vertex> B = e.getB();
-		A.forEach(vertex -> {
-			if (B.contains(vertex)) {
-				double weight = e.getEdge().getWeight() + vertex.getWeight() + B.get(B.indexOf(vertex)).getWeight();
-				double probability = e.getEdge().getProbability() * vertex.getProbability()
-						* B.get(B.indexOf(vertex)).getProbability();
-				Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), vertex.getVertex(),
+		HashMap<Integer, Double> A = e.getA();
+		HashMap<Integer, Double> B = e.getB();
+		HashMap<Integer, Double> AP = e.getAP();
+		HashMap<Integer, Double> BP = e.getBP();
+		if (A.size() == 0 || B.size() == 0)
+			return triangles;
+		if (A.size() < B.size()) {
+			Set<Integer> tmp = A.keySet().stream().filter(key -> {
+				return B.containsKey(key);
+			}).collect(Collectors.toSet());
+			tmp.forEach(key -> {
+				double weight = e.getEdge().getWeight() + A.get(key) + B.get(key);
+				double probability = e.getEdge().getProbability() * AP.get(key) * BP.get(key);
+				Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), key,
 						weight, probability);
-				triangles.add(tr);
-			}
-		});
+				// if (tr.getWeight() > w)
+					triangles.add(tr);
+			});
+		} else {
+			Set<Integer> tmp = B.keySet().stream().filter(key -> {
+				return A.containsKey(key);
+			}).collect(Collectors.toSet());
+			tmp.forEach(key -> {
+				double weight = e.getEdge().getWeight() + B.get(key) + A.get(key);
+				double probability = e.getEdge().getProbability() * AP.get(key)
+						* BP.get(key);
+				Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), key,
+						weight, probability);
+				// if (tr.getWeight() > w)
+					triangles.add(tr);
+			});
+		}
 		return triangles;
 	}
 }

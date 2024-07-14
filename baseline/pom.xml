@@ -9,6 +9,16 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
+	<distributionManagement>
+   		<snapshotRepository>
+      			<id>findCliques</id>
+      			<url>https://nexus.fleshandblood.gr/repository/findCliques</url>
+   		</snapshotRepository>
+   		<repository>
+      			<id>findCliques</id>
+      			<url>https://nexus.fleshandblood.gr/repository/findCliques</url>
+   		</repository>
+	</distributionManagement>
 
 	<dependencies>
 		<dependency>

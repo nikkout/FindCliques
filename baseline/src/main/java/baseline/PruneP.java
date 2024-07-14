@@ -3,22 +3,18 @@ package baseline;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.apache.commons.lang3.mutable.MutableDouble; 
-
-
 
 import utils.Edge;
 import utils.Graph;
-import utils.Vertex;
 
 public class PruneP extends BaselineP{
 	
-	public PruneP(Graph graph, int size){
-		super(graph, size);
+	public PruneP(Graph graph, int size, double ar, double proba){
+		super(graph, size, ar, proba);
 	}
 	
 	@Override
-	protected double computeThreshold(int h, int l, int p, MutableDouble thresholdP) {
+	protected double computeThreshold(int h, int l, int p) {
 		double r;
 		if (h != -1)
 			r = Math.pow((double) (array.get(h).getWeight()), p)
@@ -26,12 +22,11 @@ public class PruneP extends BaselineP{
 		else
 			r = Math.pow((double) (array.get(0).getWeight()), p)
 					+ 2 * Math.pow((double) (array.get(l).getWeight()), p);
-		thresholdP.setValue(Math.pow(arrayP.get(0).getProbability(), 3));
 		return r;
 	}
 	
 	@Override
-	protected void move(HashMap<Integer, ArrayList<Vertex>> rm, HashMap<Integer, ArrayList<Vertex>> add,
+	protected void move(HashMap<Integer, HashMap<Integer, Double>> rm, HashMap<Integer, HashMap<Integer, Double>> add,
 			ArrayList<Edge> array, int l) {
 		Edge tmp = array.get(l + 1);
 		super.move(rm, add, array, l);

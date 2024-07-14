@@ -2,20 +2,10 @@ package utilsTest;
 
 import static org.testng.AssertJUnit.assertTrue;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.PriorityQueue;
 
 import org.testng.annotations.Test;
 
-import utils.Edge;
-import utils.EdgeLists;
-import utils.Graph;
-import utils.ReadGraph;
-import utils.Triangle;
 import utils.Vertex;
 
 public class TestVertex {

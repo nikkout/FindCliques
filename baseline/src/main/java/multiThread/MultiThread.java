@@ -6,11 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -21,21 +17,19 @@ import utils.EdgeLists;
 import utils.FindTriangles;
 import utils.Graph;
 import utils.Triangle;
-import utils.Vertex;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MultiThread {
 
-	private ExecutorService executorService;
 	private int threads;
 	protected Set<Triangle> TSet;
 	protected PriorityBlockingQueue<Triangle> T;
 
 	protected ArrayList<Edge> array;
 	protected ArrayList<Edge> arrayP;
-	protected HashMap<Integer, ArrayList<Vertex>> HS;
-	protected HashMap<Integer, ArrayList<Vertex>> L;
+	protected HashMap<Integer, HashMap<Integer, Double>> HS;
+	protected HashMap<Integer, HashMap<Integer, Double>> L;
 	protected Graph graph;
 	protected int size;
 	private double ar;
@@ -44,7 +38,6 @@ public class MultiThread {
 	private int heavyEdgesToReadPerThread;
 
 	public MultiThread(int threads, Graph graph, int size, int edgesToReadPerThread, int heavyEdgesToReadPerThread, double ar) {
-		this.executorService = Executors.newFixedThreadPool(threads);
 		this.threads = threads;
 		this.edgesToReadPerThread = edgesToReadPerThread;
 		this.heavyEdgesToReadPerThread = heavyEdgesToReadPerThread;
@@ -81,7 +74,7 @@ public class MultiThread {
 		MutableDouble thresholdP = new MutableDouble(2);
 		int p = 1;
 		while (currentPeek == null || currentSize < size
-				|| (currentPeek.getProbability() < thresholdP.getValue() && currentPeek.getWeight() < threshold)) {
+				|| (currentPeek.getWeight() < threshold)) {
 			if (l + 1 < this.array.size()
 					&& (Math.pow(array.get(l + 1).getWeight(), ar) > array.get(h + 1).getWeight() || l == h)) {
 				l = hsSearch(l);
@@ -95,6 +88,7 @@ public class MultiThread {
 			log.debug("Size: "+ currentSize);
 			log.debug("Peek: "+ currentPeek);
 		}
+		log.info(T.size()+"");
 		return T;
 	}
 
@@ -124,8 +118,10 @@ public class MultiThread {
 			threadsArray[i] = new Thread(() -> {
 				findTriangles(e, size);
 		    });
-			threadsArray[i].start();
 			
+		}
+		for (int i = 0; i < this.threads; i++) {
+			threadsArray[i].start();
 		}
 		for (int i = 0; i < this.threads; i++) {
 			try {
@@ -201,19 +197,19 @@ public class MultiThread {
 		return e;
 	}
 
-	protected void move(HashMap<Integer, ArrayList<Vertex>> rm, HashMap<Integer, ArrayList<Vertex>> add,
+	protected void move(HashMap<Integer, HashMap<Integer, Double>> rm, HashMap<Integer, HashMap<Integer, Double>> add,
 			ArrayList<Edge> array, int l) {
 		Edge tmp = array.get(l + 1);
 		int v1 = tmp.getVertex1();
 		int v2 = tmp.getVertex2();
-		rm.get(v1).remove(rm.get(v1).indexOf(new Vertex(v2, 0)));
-		rm.get(v2).remove(rm.get(v2).indexOf(new Vertex(v1, 0)));
+		rm.get(v1).remove(v2);
+		rm.get(v2).remove(v1);
 		if (!add.containsKey(v1))
-			add.put(v1, new ArrayList<Vertex>());
-		add.get(v1).add(new Vertex(v2, tmp.getWeight()));
+			add.put(v1, new HashMap<Integer, Double>());
+		add.get(v1).put(v2, tmp.getWeight());
 		if (!add.containsKey(v2))
-			add.put(v2, new ArrayList<Vertex>());
-		add.get(v2).add(new Vertex(v1, tmp.getWeight()));
+			add.put(v2, new HashMap<Integer, Double>());
+		add.get(v2).put(v1, tmp.getWeight());
 	}
 
 	protected void findTriangles(ArrayList<EdgeLists> e, int size) {
@@ -233,6 +229,7 @@ public class MultiThread {
 				peek = T.peek();
 			} else if (TSet.add(newT)) {
 				T.put(newT);
+				peek = T.peek();
 			}
 			i++;
 		}

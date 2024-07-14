@@ -1,7 +1,7 @@
 package utils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,12 +15,22 @@ public class EdgeLists implements Serializable{
 	}
 
 	private Edge edge;
-	private ArrayList<Vertex> A;
-	private ArrayList<Vertex> B;
+	private HashMap<Integer, Double> A;
+	private HashMap<Integer, Double> B;
+	private HashMap<Integer, Double> AP;
+	private HashMap<Integer, Double> BP;
 
-	public EdgeLists(Edge edge, ArrayList<Vertex> A, ArrayList<Vertex> B) {
+	public EdgeLists(Edge edge, HashMap<Integer, Double> A, HashMap<Integer, Double> B) {
 		this.edge = edge;
 		this.A = A;
 		this.B = B;
+	}
+
+	public EdgeLists(Edge edge, HashMap<Integer, Double> A, HashMap<Integer, Double> B, HashMap<Integer, Double> AP, HashMap<Integer, Double> BP) {
+		this.edge = edge;
+		this.A = A;
+		this.B = B;
+		this.AP = AP;
+		this.BP = BP;
 	}
 }

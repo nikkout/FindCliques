@@ -4,9 +4,6 @@ import static org.testng.AssertJUnit.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.PriorityQueue;
 
 import org.testng.annotations.Test;
@@ -29,7 +26,7 @@ public class TestBaseline extends Common {
 		rg.readVV();
 		Graph graph = rg.getGraph();
 		graph.toFileW(new File("email-Eu-coreW.txt"));
-		Baseline bl = new Baseline(graph, 100);
+		Baseline bl = new Baseline(graph, 100, 1.5);
 		ArrayList<Triangle> triangles = time.executeBruteForce(this::fullEnum, graph.getAdjacencyMatrixW(),
 				"Brute Force");
 		PriorityQueue<Triangle> topKT = time.executeAlgorithm(bl::findTriangles, "Algorithm");
@@ -49,7 +46,7 @@ public class TestBaseline extends Common {
 		rg.readVV();
 		Graph graph = rg.getGraph();
 		graph.toFileW(new File("email-Eu-coreW.txt"));
-		Baseline bl = new Baseline(graph, 1000);
+		Baseline bl = new Baseline(graph, 1000, 1.5);
 		ArrayList<Triangle> triangles = time.executeBruteForce(this::fullEnum, graph.getAdjacencyMatrixW(),
 				"Brute Force");
 		PriorityQueue<Triangle> topKT = time.executeAlgorithm(bl::findTriangles, "Algorithm");

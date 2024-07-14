@@ -17,10 +17,10 @@ import lombok.Getter;
 @Setter
 @Getter
 public class Graph {
-	private HashMap<Integer, ArrayList<Vertex>> L;
-	private HashMap<Integer, ArrayList<Vertex>> LP;
-	private HashMap<Integer, ArrayList<Vertex>> HS;
-	private HashMap<Integer, ArrayList<Vertex>> HSP;
+	private HashMap<Integer, HashMap<Integer, Double>> L;
+	private HashMap<Integer, HashMap<Integer, Double>> LP;
+	private HashMap<Integer, HashMap<Integer, Double>> HS;
+	private HashMap<Integer, HashMap<Integer, Double>> HSP;
 	private ArrayList<Edge> array;
 	private HashSet<Edge> arrayMap;
 	private ArrayList<Edge> arrayP;
