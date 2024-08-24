@@ -53,7 +53,7 @@ public class TestFindTriangles {
 		Graph graph = rg.getGraph();
 		graph.toFileW(new File("email-Eu-coreW.txt"));
 		for (int y = 0; y < 100; y++) {
-			Edge edge = graph.getArray().get(y);
+			Edge edge = graph.getSortedArrayWeight().get(y);
 			ArrayList<Triangle> triangles = findTrianglesForEdge(graph.getAdjacencyMatrixW(), edge);
 			if (triangles.size() == 0)
 				continue;

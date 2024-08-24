@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 public class SortableArray<T> {
     private ArrayList<T> data;
@@ -14,10 +15,14 @@ public class SortableArray<T> {
     private boolean editable = true;
 
     public SortableArray(){
+        this(0);
+    }
+
+    public SortableArray(int size){
         this.defaultOrder = UUID.randomUUID();
-        this.data = new ArrayList<>();
+        this.data = size == 0 ? new ArrayList<>() : new ArrayList<>(size);
         this.orders = new HashMap<>();
-        this.orders.put(this.defaultOrder, new ArrayList<Integer>());
+        this.orders.put(this.defaultOrder, size == 0 ? new ArrayList<Integer>() : new ArrayList<Integer>(size));
     }
 
     public void add(T entry){
@@ -49,5 +54,13 @@ public class SortableArray<T> {
 
     public Iterator<T> getDefaultIterator(){
         return new Iterator<T>(this.orders.get(this.defaultOrder), this.data);
+    }
+
+    public void forEach(Consumer<T> func){
+        this.getDefaultIterator().forEach(func);
+    }
+
+    public boolean contains(T obj){
+        return this.data.contains(obj);
     }
 }

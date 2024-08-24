@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.Setter;
@@ -21,15 +22,16 @@ public class Graph {
 	private HashMap<Integer, HashMap<Integer, Double>> LP;
 	private HashMap<Integer, HashMap<Integer, Double>> HS;
 	private HashMap<Integer, HashMap<Integer, Double>> HSP;
-	private ArrayList<Edge> array;
+	private SortableArray<Edge> array;
 	private HashSet<Edge> arrayMap;
-	private ArrayList<Edge> arrayP;
+	private utils.Iterator<Edge> sortedArrayWeight;
+	private utils.Iterator<Edge> sortedArrayProbability;
 
 	public Graph(int arraySize) {
 		if (arraySize == 0)
-			this.array = new ArrayList<>();
+			this.array = new SortableArray<>();
 		else
-			this.array = new ArrayList<>(arraySize);
+			this.array = new SortableArray<>(arraySize);
 		this.arrayMap = new HashSet<>();
 		this.L = new HashMap<>();
 		this.LP = new HashMap<>();
@@ -42,28 +44,19 @@ public class Graph {
 	}
 
 	public void sortArrayWeight() {
-		Collections.sort(this.array, new Comparator<Edge>() {
-			@Override
-			public int compare(Edge lhs, Edge rhs) {
-				// -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
-				return lhs.getWeight() > rhs.getWeight() ? -1 : (lhs.getWeight() < rhs.getWeight()) ? 1 : 0;
-			}
+		UUID tmp = this.array.sort((Edge lhs, Edge rhs) -> {
+			// -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+			return lhs.getWeight() > rhs.getWeight() ? -1 : (lhs.getWeight() < rhs.getWeight()) ? 1 : 0;
 		});
+		this.sortedArrayWeight = this.array.getIterator(tmp);
 	}
 
 	public void sortArrayProbability() {
-		this.arrayP = new ArrayList<Edge>();
-		this.array.forEach(edge -> {
-			this.arrayP.add(edge);
+		UUID tmp = this.array.sort((Edge lhs, Edge rhs) -> {
+			return lhs.getProbability() > rhs.getProbability() ? -1
+					: (lhs.getProbability() < rhs.getProbability()) ? 1 : 0;
 		});
-		Collections.sort(this.arrayP, new Comparator<Edge>() {
-			@Override
-			public int compare(Edge lhs, Edge rhs) {
-				// -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
-				return lhs.getProbability() > rhs.getProbability() ? -1
-						: (lhs.getProbability() < rhs.getProbability()) ? 1 : 0;
-			}
-		});
+		this.sortedArrayProbability = this.array.getIterator(tmp);
 	}
 
 	public void toFileWP(File f) {
@@ -108,7 +101,7 @@ public class Graph {
 
 	private int findMaxVertex() {
 		AtomicInteger max = new AtomicInteger(0);
-		this.array.forEach((i) -> {
+		this.sortedArrayWeight.forEach((i) -> {
 			if (max.get() < i.getVertex2()) {
 				max.set(i.getVertex2());
 			}
@@ -119,7 +112,7 @@ public class Graph {
 	public double[][] getAdjacencyMatrix() {
 		int V = findMaxVertex() + 1;
 		double[][] matrix = new double[V][V];
-		this.array.forEach(e -> {
+		this.sortedArrayWeight.forEach(e -> {
 			matrix[e.getVertex1()][e.getVertex2()] = 1;
 			matrix[e.getVertex2()][e.getVertex1()] = 1;
 		});
@@ -129,7 +122,7 @@ public class Graph {
 	public double[][] getAdjacencyMatrixW() {
 		int V = findMaxVertex() + 1;
 		double[][] matrix = new double[V][V];
-		this.array.forEach(e -> {
+		this.sortedArrayWeight.forEach(e -> {
 			matrix[e.getVertex1()][e.getVertex2()] = e.getWeight();
 			matrix[e.getVertex2()][e.getVertex1()] = e.getWeight();
 		});
@@ -139,7 +132,7 @@ public class Graph {
 	public double[][] getAdjacencyMatrixP() {
 		int V = findMaxVertex() + 1;
 		double[][] matrix = new double[V][V];
-		this.array.forEach(e -> {
+		this.sortedArrayWeight.forEach(e -> {
 			matrix[e.getVertex1()][e.getVertex2()] = e.getProbability();
 			matrix[e.getVertex2()][e.getVertex1()] = e.getProbability();
 		});

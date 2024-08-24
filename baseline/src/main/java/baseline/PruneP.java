@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import utils.Edge;
 import utils.Graph;
+import utils.Iterator;
 
 public class PruneP extends BaselineP{
 	
@@ -27,11 +28,11 @@ public class PruneP extends BaselineP{
 	
 	@Override
 	protected void move(HashMap<Integer, HashMap<Integer, Double>> rm, HashMap<Integer, HashMap<Integer, Double>> add,
-			ArrayList<Edge> array, int l) {
+			Iterator<Edge> array, int l) {
 		Edge tmp = array.get(l + 1);
 		super.move(rm, add, array, l);
 		//Addition to the overridden function of Baseline
 		//Required to have an accurate probabilities threshold
-		this.arrayP.remove(tmp);
+		// this.arrayP.remove(tmp);
 	}
 }

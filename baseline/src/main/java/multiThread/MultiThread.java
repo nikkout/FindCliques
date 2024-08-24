@@ -17,6 +17,7 @@ import utils.EdgeLists;
 import utils.FindTriangles;
 import utils.Graph;
 import utils.Triangle;
+import utils.Iterator;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -26,8 +27,8 @@ public class MultiThread {
 	protected Set<Triangle> TSet;
 	protected PriorityBlockingQueue<Triangle> T;
 
-	protected ArrayList<Edge> array;
-	protected ArrayList<Edge> arrayP;
+	protected Iterator<Edge> array;
+	protected Iterator<Edge> arrayP;
 	protected HashMap<Integer, HashMap<Integer, Double>> HS;
 	protected HashMap<Integer, HashMap<Integer, Double>> L;
 	protected Graph graph;
@@ -43,8 +44,8 @@ public class MultiThread {
 		this.heavyEdgesToReadPerThread = heavyEdgesToReadPerThread;
 		this.ar = ar;
 
-		array = graph.getArray();
-		arrayP = graph.getArrayP();
+		array = graph.getSortedArrayWeight();
+		arrayP = graph.getSortedArrayProbability();
 		HS = graph.getHS();
 		L = graph.getL();
 		this.graph = graph;
@@ -198,7 +199,7 @@ public class MultiThread {
 	}
 
 	protected void move(HashMap<Integer, HashMap<Integer, Double>> rm, HashMap<Integer, HashMap<Integer, Double>> add,
-			ArrayList<Edge> array, int l) {
+			Iterator<Edge> array, int l) {
 		Edge tmp = array.get(l + 1);
 		int v1 = tmp.getVertex1();
 		int v2 = tmp.getVertex2();

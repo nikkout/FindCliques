@@ -6,14 +6,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
-import org.apache.commons.lang3.mutable.MutableDouble;
-
 import lombok.extern.slf4j.Slf4j;
 import utils.Edge;
 import utils.EdgeLists;
 import utils.FindTriangles;
 import utils.Graph;
 import utils.Triangle;
+import utils.Iterator;
 
 @Slf4j
 public class BaselineP extends Baseline {
@@ -60,7 +59,7 @@ public class BaselineP extends Baseline {
 		if (e == null)
 			return;
 		FindTriangles ft = new FindTriangles();
-		ArrayList<Triangle> newTriangles = ft.findTrianglesP(e);
+		ArrayList<Triangle> newTriangles = ft.findTrianglesP(e, 0);
 		Collections.sort(newTriangles, new Comparator<Triangle>() {
 			@Override
 			public int compare(Triangle lhs, Triangle rhs) {
@@ -128,7 +127,7 @@ public class BaselineP extends Baseline {
 
 	protected void move(HashMap<Integer, HashMap<Integer, Double>> rm, HashMap<Integer, HashMap<Integer, Double>> add,
 	HashMap<Integer, HashMap<Integer, Double>> rmp, HashMap<Integer, HashMap<Integer, Double>> addp,
-			ArrayList<Edge> array, int l) {
+			Iterator<Edge> array, int l) {
 		Edge tmp = array.get(l + 1);
 		int v1 = tmp.getVertex1();
 		int v2 = tmp.getVertex2();

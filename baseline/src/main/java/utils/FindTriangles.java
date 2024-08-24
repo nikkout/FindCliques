@@ -85,7 +85,7 @@ public class FindTriangles {
 		return triangleArray;
 	}
 
-	public ArrayList<Triangle> findTrianglesP(EdgeLists e) {
+	public ArrayList<Triangle> findTrianglesP(EdgeLists e, double w) {
 		ArrayList<Triangle> triangles = new ArrayList<>();
 		HashMap<Integer, Double> A = e.getA();
 		HashMap<Integer, Double> B = e.getB();
@@ -102,7 +102,7 @@ public class FindTriangles {
 				double probability = e.getEdge().getProbability() * AP.get(key) * BP.get(key);
 				Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), key,
 						weight, probability);
-				// if (tr.getWeight() > w)
+				if (tr.getWeight() > w)
 					triangles.add(tr);
 			});
 		} else {
@@ -115,7 +115,7 @@ public class FindTriangles {
 						* BP.get(key);
 				Triangle tr = new Triangle(e.getEdge().getVertex1(), e.getEdge().getVertex2(), key,
 						weight, probability);
-				// if (tr.getWeight() > w)
+				if (tr.getWeight() > w)
 					triangles.add(tr);
 			});
 		}

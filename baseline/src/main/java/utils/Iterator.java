@@ -2,6 +2,7 @@ package utils;
 
 import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
+import java.util.function.Consumer;
 
 @Slf4j
 public class Iterator<T> {
@@ -15,7 +16,6 @@ public class Iterator<T> {
     }
 
     public T getNext() {
-        log.debug(""+this.pos);
         if(pos >= this.order.size()){
             return null;
         }
@@ -23,7 +23,29 @@ public class Iterator<T> {
         return this.data.get(this.order.get(this.pos-1));
     }
 
+    public T get(int pos) {
+        if(pos >= this.order.size()){
+            return null;
+        }
+        return this.data.get(this.order.get(pos));
+    }
+
     public void reset(){
         this.pos = 0;
+    }
+
+    public void forEach(Consumer<T> func){
+        int pre = this.pos;
+        this.reset();
+        T tmp = this.getNext();
+        while(tmp != null){
+            func.accept(tmp);
+            tmp = this.getNext();
+        }
+        this.pos = pre;
+    }
+
+    public int size(){
+        return this.data.size();
     }
 }
