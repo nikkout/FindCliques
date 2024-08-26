@@ -146,8 +146,8 @@ public class TestPrune extends Common {
 		for (int i = topKT.size()-1; i >= 0; i--) {
 			Triangle peak = topKT.poll();
 			log.debug(peak+"");
-			// assertTrue(peak + " is not equal to " + triangles.get(i), peak.equals(triangles.get(i)));
-			if(!peak.equals(triangles.get(i))) log.error(peak + " is not equal to " + triangles.get(i));
+			assertTrue(peak + " is not equal to " + triangles.get(i), peak.equals(triangles.get(i)));
+			// if(!peak.equals(triangles.get(i))) log.error(peak + " is not equal to " + triangles.get(i));
 		}
 	}
 }

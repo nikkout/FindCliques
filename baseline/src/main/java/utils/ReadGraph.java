@@ -244,21 +244,19 @@ public class ReadGraph {
 				if (!graph.getLP().containsKey(tmp1)) {
 					graph.getLP().put(tmp1, new HashMap<Integer, Double>());
 				}
-				graph.getL().get(tmp1).put(tmp2, tmp3);
-				graph.getLP().get(tmp1).put(tmp2, tmp4);
+					graph.getL().get(tmp1).put(tmp2, tmp3);
+					graph.getLP().get(tmp1).put(tmp2, tmp4);
 				if (!graph.getL().containsKey(tmp2)) {
 					graph.getL().put(tmp2, new HashMap<Integer, Double>());
 				}
 				if (!graph.getLP().containsKey(tmp2)) {
 					graph.getLP().put(tmp2, new HashMap<Integer, Double>());
 				}
-				graph.getL().get(tmp2).put(tmp1, tmp3);
-				graph.getLP().get(tmp2).put(tmp1, tmp4);
+					graph.getL().get(tmp2).put(tmp1, tmp3);
+					graph.getLP().get(tmp2).put(tmp1, tmp4);
 				Edge tmp = new Edge(tmp1, tmp2, tmp3, tmp4);
 				graph.getArray().add(tmp);
 			}
-			graph.getAdjacencyMatrixP();
-			graph.getAdjacencyMatrixW();
 			scanner.close();
 		} catch (Exception e) {
 			e.printStackTrace();
