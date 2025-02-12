@@ -25,6 +25,8 @@ public class Baseline {
 	protected Graph graph;
 	protected int size;
 	protected double ar;
+	protected Triangle currentPeek;
+	protected int currentSize = 0;
 	
 	public Baseline(Graph graph, int size, double ar){
 		array = graph.getSortedArrayWeight();
@@ -41,13 +43,12 @@ public class Baseline {
 		TSet = new HashSet<>();
 		this.graph = graph;
 		this.size = size;
+		this.currentPeek = new Triangle(0, 0, 0, Double.MIN_VALUE);
 	}
 
 	public PriorityQueue<Triangle> findTriangles() {
 		int l = -1;
 		int h = -1;
-		Triangle currentPeek = null;
-		int currentSize = 0;
 		double threshold = 0;
 		int p = 1;
 		while (currentPeek == null || currentSize < size || currentPeek.getWeight() < threshold) {
